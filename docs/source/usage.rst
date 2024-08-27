@@ -72,3 +72,33 @@ For example:
 >>> lumache.get_random_ingredients()
 ['shells', 'gorgonzola', 'parsley']
 
+Cluster using Cellcharter
+
+.. code-block:: 
+
+   # https://pypi.tuna.tsinghua.edu.cn/simple
+   import anndata as ad
+   import scvi
+
+   fdata = ad.read_h5ad("A04091E1.h5")
+
+   #sc.pp.highly_variable_genes(fdata, flavor="seurat", n_top_genes=2000, layer="counts", batch_key="time_point", subset=True)
+
+   scvi.settings.seed = 114514
+   scvi.model.SCVI.setup_anndata(fdata, batch_key="marker")
+   model=scvi.model.SCVI(fdata, n_hidden=128, n_latent=20, n_layers=10, gene_likelihood="poisson", latent_distribution="normal")
+
+   model.train(early_stopping=True, enable_progress_bar=True)
+
+   model.save("scvi.model", save_anndata=True, overwrite=True)
+
+   fdata.obsm["X_scVI"] = model.get_latent_representation(fdata).astype(np.float32)
+
+   sq.gr.spatial_neighbors(fdata, library_key="marker", coord_type="generic", delaunay=True, spatial_key="spatial")
+   cc.gr.remove_long_links(fdata)
+   cc.gr.aggregate_neighbors(fdata, n_layers=3, use_rep="X_scVI", out_key="X_cellcharter", sample_key="time_point")
+
+*output:*
+
+.. image:: ../_images/cluster_result.png
+   :align: center
