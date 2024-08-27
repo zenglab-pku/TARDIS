@@ -34,7 +34,26 @@ This data incorporates a library of **68 guides**, and is sequenced on **BGI Ste
 
 .. image:: ../_images/filter_qc.png
    :align: center
+
+Filtering using :py:func:`preprocessing.filter_guide_reads()`
+
+Specify:
+
+* binarilize: Whether to set all bins cnt to 1, recommended with high library size and high resolution.
+
+* assign_pattern: Can be 'max', 'all', 'drop'
    
+   'max': Keep only the guide in bin with max count
+
+   'drop': Keep only bins with singlet guide
+
+   'all': Keep all guide in bin
+
+* filter_threshold: Filter bins with guide less than threshold. Unspecify or set to 0 to disable.
+
+.. code-block:: 
+
+   sp.filter_guide_reads('A04091E1.gem', output='A04091E1.gem')
 
 To retrieve a list of random ingredients,
 you can use the ``lumache.get_random_ingredients()`` function:
