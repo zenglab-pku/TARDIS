@@ -1,37 +1,40 @@
 Usage
 =====
 
-.. _installation:
+.. note::
 
-Installation
-------------
+   This here is an API version of all the functions applicable in **SPOT**,
+   For more detailed and thorough reference please visit our :ref:`tutorial` site.
 
-To use SPOT (python version), first install it using pip:
+Preprocessing
+----------------
 
-.. code-block:: 
+Spatial perturbation can be highly arbitrary if we cannot perform valid
+preprocessing and filtering of low quality guides and bins. Refer to *Paper name*
+for our in house filtering method.
 
-   (.venv) $ pip install 
+**SPOT** performs filtering with validation panels with the following methods.
 
-To install SPOT (R version), first intall *dev-tools*
+First import **SPOT** from library.
 
 .. code-block::
 
-   $ install.packages('dev-tools')
+   import spot as sp
+   sp.set_random_seed(42)
 
-**SPOT** can be ran on both Linux and Mac OS, since it is interpreted by python and R.
+In this tutorial we use our in house spatial transcriptomics data.
+This data incorporates a library of **68 guides**, and is sequenced on **BGI Stereo-seq** platform.
 
-.. note::
+.. code-block::
 
-   Both python and R version requires *python* to run **Cluster dependent** analysis. since
-   they require *Cellcharter* to perform clustering.
+   # perform quality check from BGI stereo-seq GEM output
+   sp.preprocessing.filter_qc_bins('A04091E1.gem')
 
-   If other clustering method is performed, follow the instructions in :ref:`tutorial` to perform
-   downstream analysis.
-
-Creating recipes
-----------------
+*output:*
 
 .. image:: ../_images/filter_qc.png
+   :align: center
+   
 
 To retrieve a list of random ingredients,
 you can use the ``lumache.get_random_ingredients()`` function:
