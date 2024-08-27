@@ -6,7 +6,7 @@ project = 'SPOT'
 copyright = '2024, Trasond'
 author = 'Trasond'
 
-release = '0.1'
+release = '0.1' 
 version = '0.1.0'
 
 # -- General configuration
