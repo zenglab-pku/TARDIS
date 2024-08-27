@@ -102,3 +102,21 @@ Cluster using Cellcharter
 
 .. image:: ../_images/cluster_result.png
    :align: center
+
+Clustering
+----------------
+
+TODO.
+
+Cluster dependent ranking
+----------------
+
+Method :py:func:`tools.cluster_permanova()` performs spatial PERMANOVA.
+Permutational multivariate analysis of variance (PERMANOVA) is a non-parametric multivariate statistical permutation test.
+We use PERMANOVA to identify distirbution difference of guide to control.
+
+Method :py:func:`tools.cluster_specific_chi2()` performs cluster specific CHI2.
+See :ref:tutorial:`tutorial` for detailed information.
+
+Cluster independent ranking
+----------------
