@@ -14,11 +14,13 @@ To use SPOT (python version), first install its dependencies using pip or conda.
 
    Alternatively, we provide a Non-negative Matrix Factorization (NMF) model for simple analysis.
 
-   .. [1] Varrone, M., Tavernari, D., Santamaria-Martínez, A. et al. CellCharter reveals spatial cell niches associated with tissue remodeling and cell plasticity. Nat Genet 56, 74–84 (2024).
+.. contents:: 
+
+   You can simply install SPOT dependencies using pip through:
 
 .. code-block:: 
 
-   (.venv) $ pip install 
+   (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy
 
 **SPOT** can be ran on both Linux and Mac OS, since it is interpreted by python and R.
 
@@ -43,3 +45,5 @@ To install SPOT (R version), first intall *dev-tools*
 .. note::
 
    R version *4.2.2* is reconmended.
+
+.. [1] Varrone, M., Tavernari, D., Santamaria-Martínez, A. et al. CellCharter reveals spatial cell niches associated with tissue remodeling and cell plasticity. Nat Genet 56, 74–84 (2024).
