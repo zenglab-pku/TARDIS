@@ -85,5 +85,5 @@ After filtering, we can perform quality control on the filtered data.
 
    plt.show()
 
-.. image:: ../_images/qc_guide_bins.png
+.. image:: ../_images/guide_reads.png
    :align: center

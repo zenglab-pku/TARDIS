@@ -28,8 +28,6 @@ Contents
    NMF
    Cellcharter
    ChiSquareTest
-   PERMANOVA
    KLDistance
-   WassersteinDistance
    Tutorial
    API

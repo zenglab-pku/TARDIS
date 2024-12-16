@@ -1,6 +1,0 @@
-WassersteinDistance
-===================
-
-.. _WassersteinDistance:
-
-TODO.
