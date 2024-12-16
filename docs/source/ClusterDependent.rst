@@ -3,10 +3,6 @@ ClusterDependent
 
 .. _ClusterDependent:
 
-
-Cluster Dependent Analysis
---------------------------
-
 CLuster PERMANOVA
 -----------------
 

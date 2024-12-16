@@ -3,9 +3,6 @@ ClusterIndependent
 
 .. _ClusterIndependent:
 
-Cluster Independent Analysis
-----------------------------
-
 Kernel Density Estimation and Wasserstein Distance
 ----------------------------------------------------
 
