@@ -39,86 +39,51 @@ This data incorporates a library of **68 guides**, and is sequenced on **BGI Ste
 
 Filtering using :py:func:`preprocessing.filter_guide_reads()`
 
-Specify:
+.. py:function:: filter_guide_reads(gem_path, guide_prefix=None, output_path=None, binarilize=False, assign_pattern='max', filter_threshold=None)
 
-* binarilize: Whether to set all bins cnt to 1, recommended with high library size and high resolution.
+   Filter and process guide reads from a GEM file.
 
-* assign_pattern: Can be 'max', 'all', 'drop'
-   
-   'max': Keep only the guide in bin with max count
+   :param gem_path: Path to the input GEM file
+   :param guide_prefix: Optional prefix to filter guide names. Only guides starting with this prefix will be kept
+   :param output_path: Optional path to save filtered results. If None, returns the filtered DataFrame
+   :param binarilize: Whether to set all bin counts to 1. Recommended for high library size and resolution
+   :param assign_pattern: How to handle bins with multiple guides. Can be 'max' (keep guide with max count), 'drop' (remove multi-guide bins), or 'all' (keep all guides)
+   :param filter_threshold: Minimum guide count threshold. Bins with guides below this count will be filtered out
+   :return: Filtered pandas DataFrame if output_path is None, otherwise None
 
-   'drop': Keep only bins with singlet guide
+The function processes a GEM file containing guide reads and performs filtering based on the specified parameters:
 
-   'all': Keep all guide in bin
+1. Reads the GEM file and optionally filters for guides with a specific prefix
+2. Removes bins with guide counts below the threshold if specified  
+3. Handles bins with multiple guides according to the assign_pattern:
 
-* filter_threshold: Filter bins with guide less than threshold. Unspecify or set to 0 to disable.
+   - 'max': Keeps only the guide with highest count in each bin
+   - 'drop': Removes all bins that have multiple guides
+   - 'all': Keeps all guides in multi-guide bins
 
-.. code-block:: 
+4. Optionally binarizes the counts (sets all to 1)
+5. Returns filtered DataFrame or saves to file
 
-   sp.filter_guide_reads('A04091E1.gem', output='A04091E1.gem')
+Example usage:
 
-To retrieve a list of random ingredients,
-you can use the ``lumache.get_random_ingredients()`` function:
+.. code-block::
 
-.. autofunction:: lumache.get_random_ingredients
+   filtered_data = sp.filter_guide_reads('A04091E1.gem', output_path='A04091E1_filtered.gem')
 
-The ``kind`` parameter should be either ``"meat"``, ``"fish"``,
-or ``"veggies"``. Otherwise, :py:func:`lumache.get_random_ingredients`
-will raise an exception.
+After filtering, we can perform quality control on the filtered data.
 
-.. autoexception:: lumache.InvalidKindError
+.. code-block::
 
-For example:
+   sp.preprocessing.filter_qc_bins('A04091E1_filtered.gem')
 
->>> import lumache
->>> lumache.get_random_ingredients()
-['shells', 'gorgonzola', 'parsley']
+   plt.figure(figsize=(8, 6))
+   scatter = plt.scatter(x=gdata.obsm['spatial'][:, 0], y=gdata.obsm['spatial'][:, 1],
+                        s=gdata.obs['n_genes_by_counts'], alpha=0.5, c=gdata.obs['total_counts'], cmap='viridis')
+   sns.despine()
+   plt.colorbar(scatter, label='Total counts')
+   plt.title('Guide reads')
 
-Cluster using Cellcharter
+   plt.show()
 
-.. code-block:: 
-
-   # https://pypi.tuna.tsinghua.edu.cn/simple
-   import anndata as ad
-   import scvi
-
-   fdata = ad.read_h5ad("A04091E1.h5")
-
-   #sc.pp.highly_variable_genes(fdata, flavor="seurat", n_top_genes=2000, layer="counts", batch_key="time_point", subset=True)
-
-   scvi.settings.seed = 114514
-   scvi.model.SCVI.setup_anndata(fdata, batch_key="marker")
-   model=scvi.model.SCVI(fdata, n_hidden=128, n_latent=20, n_layers=10, gene_likelihood="poisson", latent_distribution="normal")
-
-   model.train(early_stopping=True, enable_progress_bar=True)
-
-   model.save("scvi.model", save_anndata=True, overwrite=True)
-
-   fdata.obsm["X_scVI"] = model.get_latent_representation(fdata).astype(np.float32)
-
-   sq.gr.spatial_neighbors(fdata, library_key="marker", coord_type="generic", delaunay=True, spatial_key="spatial")
-   cc.gr.remove_long_links(fdata)
-   cc.gr.aggregate_neighbors(fdata, n_layers=3, use_rep="X_scVI", out_key="X_cellcharter", sample_key="time_point")
-
-*output:*
-
-.. image:: ../_images/cluster_result.png
+.. image:: ../_images/qc_guide_bins.png
    :align: center
-
-Clustering
-----------------
-
-TODO.
-
-Cluster dependent ranking
-----------------
-
-Method :py:func:`tools.cluster_permanova()` performs spatial PERMANOVA.
-Permutational multivariate analysis of variance (PERMANOVA) is a non-parametric multivariate statistical permutation test.
-We use PERMANOVA to identify distirbution difference of guide to control.
-
-Method :py:func:`tools.cluster_specific_chi2()` performs cluster specific CHI2.
-See :ref:tutorial:`tutorial` for detailed information.
-
-Cluster independent ranking
-----------------

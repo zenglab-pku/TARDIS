@@ -51,5 +51,3 @@ We can also check the distribution of the guides with low Chi2 p-value.
     The test evaluates whether guides show significantly different patterns across clusters compared to the control.
 
 All chi-square test results are stored in the :py:attr:`adata.uns` attribute named 'Chi2 p-value' by default.
-
-TODO.
