@@ -1,5 +1,10 @@
-Clustering Using NMF
+NMF
 ====================
+
+.. _NMF:
+
+NMF Clustering
+----------------
 
 .. attention::
 
