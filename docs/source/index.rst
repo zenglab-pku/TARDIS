@@ -3,6 +3,9 @@ Welcome to SPOT's documentation!
 
 **SPOT** (Spatial Perturbation Omics analysis Toolkit) is a model based toolkit for spaital CRISPR knockout screening analysis.
 
+.. image:: _images/LOGO.png
+   :align: center
+
 **SPOT** is a free, open-source software for both python and R environment users under the MIT license.
 Please cite the paper `Paper here` when using the toolkit.
 
