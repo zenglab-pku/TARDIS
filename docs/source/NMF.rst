@@ -56,7 +56,8 @@ Then we perform NMF on the filtered data with a simple function. :py:func:`A_pre
 In this NMF approach, we decompose the gene expression profile space-wise into an extend of components. Then perform consensus clustering of
 component's pearsonr correlation.
 
-.. math:: 
+.. math::
+    :align: center
 
     \mathbf{A} \approx \mathbf{W} \mathbf{H} \\
     \text{where } \mathbf{A} \in \mathbb{R}^{n \times m} \text{ is the gene expression matrix} \\
@@ -66,6 +67,7 @@ component's pearsonr correlation.
 Then we compute the pearson correlation matrix:
 
 .. math::
+    :align: center
 
     \mathbf{P} = \text{pearson}(\mathbf{H}_i, \mathbf{H}_j) \\
 
@@ -78,8 +80,12 @@ The score of top optimal genes is store in the :py:attr:`adata.obs` attribute.
 
     clustered_nmf_data.obs['nmf_cluster'] = clustered_nmf_data.obs.idxmax(axis=1).str.split('_').str[2].astype(int)
 
+A sptial demonstration of NMF clustering is shown below.
+
 .. image:: ../_images/NMF_cluster_map.png
    :align: center
+
+
 
 .. [1] He, P., Williams, B.A., Trout, D. et al. The changing mouse embryo transcriptome at whole tissue and single-cell resolution. Nature 583, 760–767 (2020).
 
