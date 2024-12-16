@@ -23,7 +23,7 @@ Contents
 
 .. toctree::
 
-   Installation <installation>
+   Installation <Installation>
    Preprocessing <Usage/Preprocessing>
    NMF <Usage/Clustering/NMF>
    Cellcharter <Usage/Clustering/Cellcharter>
@@ -33,5 +33,3 @@ Contents
    WassersteinDistance <Usage/ClusterDependent/WassersteinDistance>
    Tutorial <Tutorial/tutorial>
    API <API>
-
-
