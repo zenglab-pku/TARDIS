@@ -11,8 +11,8 @@ Offcial documentation `can be found here at <https://spot-tutorial.readthedocs.i
 Refer to our `SPAC-seq analysis tutorial <https://github.com/pkuTrasond/SPAC-seq/tree/master>`,
 it offers a *simple* and *intuitive* API.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+Check out the :doc:`Usage` section for further information, including
+how to :ref:`Installation` the project.
 
 .. note::
 
