@@ -23,7 +23,13 @@ Contents
 
 .. toctree::
 
-   installation
-   usage
-   tutorial
-   api
+   Installation
+   Usage/Preprocessing
+   Usage/Clustering/NMF
+   Usage/Clustering/Cellcharter
+   Usage/ClusterDependent/ChiSquareTest
+   Usage/ClusterDependent/PERMANOVA
+   Usage/ClusterIndependent/KLDistance
+   Usage/ClusterIndependent/WassersteinDistance
+   Tutorial/tutorial
+   API
