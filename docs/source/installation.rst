@@ -6,7 +6,15 @@ Installation
 Installing using python
 ------------
 
-To use SPOT (python version), first install it using pip:
+To use SPOT (python version), first install its dependencies using pip or conda.
+
+.. attention:: 
+   To run **SPOT** with cluster dependent modules, you must specify cluster fields.
+   One recommended spatial clustering method is *Cellcharter* [1]_.
+
+   Alternatively, we provide a Non-negative Matrix Factorization (NMF) model for simple analysis.
+
+   .. [1] Varrone, M., Tavernari, D., Santamaria-Martínez, A. et al. CellCharter reveals spatial cell niches associated with tissue remodeling and cell plasticity. Nat Genet 56, 74–84 (2024).
 
 .. code-block:: 
 
