@@ -27,7 +27,7 @@ Contents
    Preprocessing
    NMF
    Cellcharter
-   ChiSquareTest
-   KLDistance
+   ClusterDependent
+   ClusterIndependent
    Tutorial
    API

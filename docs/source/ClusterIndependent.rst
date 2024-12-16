@@ -1,10 +1,41 @@
-KLDistance
-===========
+ClusterIndependent
+=================
 
-.. _KLDistance:
+.. _ClusterIndependent:
+
+Cluster Independent Analysis
+----------------------------
+
+Kernel Density Estimation and Wasserstein Distance
+----------------------------------------------------
+
+.. py:function:: rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting', guide_list=None, n_permutation=50, n_process=8, return_fig=False, return_dataframe=True, sort_by_replicate='_')
+
+   Ranks guides using kernel density estimation and Wasserstein distance.
+
+   :param adata: AnnData object containing spatial transcriptomics data
+   :param control_guide: Name of the control guide, default is 'sgNon-targeting'
+   :param guide_list: List of guides to analyze, default is None (analyzes all guides)
+   :param n_permutation: Number of permutations for significance testing, default is 50
+   :param n_process: Number of parallel processes, default is 8
+   :param return_fig: Whether to return the figure object, default is False
+   :param return_dataframe: Whether to return the results dataframe, default is True
+   :param sort_by_replicate: Delimiter for grouping replicates, default is '_'
+   :return: Returns figure or dataframe based on return_fig and return_dataframe settings
+
+The function uses kernel density estimation (KDE) to compute the spatial distribution of each guide and measures its difference from the control guide using Wasserstein distance.
+
+Example usage:
+
+.. code-block::
+
+   import spot as sp
+   results = sp.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
+
+The results show the Wasserstein distance between each guide and the control group, with larger distances indicating more significant spatial distribution differences. Asterisks (*) indicate statistical significance with p-value < 0.05.
 
 KL Distance Ranking
-------------------
+-------------------
 
 The KL (Kullback-Leibler) distance ranking function helps identify guides with significantly different spatial distributions compared to a reference distribution.
 
