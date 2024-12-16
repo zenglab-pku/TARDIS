@@ -32,7 +32,7 @@ This data incorporates a library of **68 guides**, and is sequenced on **BGI Ste
 
 *output:*
 
-.. image:: ../_images/filter_qc.png
+.. image:: ../_images/qc_guide_bins.png
    :align: center
 
 Filtering using :py:func:`preprocessing.filter_guide_reads()`

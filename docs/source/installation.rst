@@ -14,9 +14,7 @@ To use SPOT (python version), first install its dependencies using pip or conda.
 
    Alternatively, we provide a Non-negative Matrix Factorization (NMF) model for simple analysis.
 
-.. contents:: 
-
-   You can simply install SPOT dependencies using pip through:
+You can simply install SPOT dependencies using pip through:
 
 .. code-block:: 
 
@@ -41,6 +39,8 @@ To install SPOT (R version), first intall *dev-tools*
 
    $ install.packages('devtools')
    $ devtools::install_github("pkuTrasond/SPOT")
+
+R will automatically install all the dependencies.
 
 .. note::
 
