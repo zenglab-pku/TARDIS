@@ -1,7 +1,7 @@
 Installation
 =====
 
-.. _installation:
+.. _Installation:
 
 Installing using python
 ------------

@@ -1,4 +1,6 @@
 WassersteinDistance
 ===================
 
+.. _WassersteinDistance:
+
 TODO.

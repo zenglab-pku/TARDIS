@@ -1,4 +1,6 @@
-Clustering Using Cellcharter
+Cellcharter
 ============================
 
-To.
+
+.. _Cellcharter:
+TODO.

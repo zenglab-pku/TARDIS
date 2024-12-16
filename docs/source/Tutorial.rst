@@ -1,7 +1,7 @@
-tutorial
-=====
+Tutorial
+========
 
-.. _tutorial::
+.. _Tutorial:
 
 Example script
 

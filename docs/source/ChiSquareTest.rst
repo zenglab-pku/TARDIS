@@ -1,4 +1,6 @@
 ChiSquareTest
 =============
 
+.. _ChiSquareTest:
+
 TODO.

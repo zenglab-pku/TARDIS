@@ -1,4 +1,6 @@
 KLDistance
 ===========
 
+.. _KLDistance:
+
 TODO.

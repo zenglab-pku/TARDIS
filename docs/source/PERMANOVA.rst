@@ -1,4 +1,6 @@
 PERMANOVA
 =========
 
+.. _PERMANOVA:
+
 TODO.

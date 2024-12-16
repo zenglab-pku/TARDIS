@@ -1,6 +1,8 @@
 Preprocessing
 =====
 
+.. _Preprocessing:
+
 .. note::
 
    This here is an API version of all the functions applicable in **SPOT**,
