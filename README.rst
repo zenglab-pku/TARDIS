@@ -25,6 +25,12 @@ https://spot-tutorial.readthedocs.io/en/latest/
 Installing using python
 ------------
 
+SPOT is a tool for systematic and user-friendly identification of gene-of-interest for spatial CRISPR perturbation data. SPOT can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Nanopore (Oxford Nanopore Tech.). SPOT individually provides gRNA cDNA library manipulation scripts for each platform. After raw data processing and obtaining gRNA read data, SPOT preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering, filtering and diffusion checks.
+The main SPOT algorithm contains 2 cluster aware ranking method and 3 cluster unaware ranking method. Users can run all 5 method and derive consistency analysis with different methods to determine their results and robustness of the analysis. Finally, SPOT provides user-friendly interfaces to illustrate and output the ranking results.
+
+.. image:: ./docs/source/_images/Illustration.png
+   :align: center
+
 To use SPOT (python version), first install its dependencies using pip or conda.
 
 You can simply install SPOT dependencies using pip through:
