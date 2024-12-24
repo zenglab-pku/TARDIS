@@ -84,6 +84,16 @@ Before starting, we need to import necessary libraries.
     scanpy and squidpy are required for spatial clustering analysis, numpy is required for numerical operations,
     matplotlib and seaborn are required for visualization, and pandas is required for data manipulation.
 
+Read in the data.
+
+.. code-block::
+
+    gem_df = pd.read_csv('guide.gem', sep='\t')
+    gem_df.head()
+
+.. image:: ../_images/gem_head.png
+   :align: center
+
 Preprocessing
 ------------
 
