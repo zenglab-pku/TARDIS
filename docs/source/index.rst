@@ -27,7 +27,9 @@ Contents
    Preprocessing
    NMF
    Cellcharter
-   ClusterDependent
+   GlobalModule
    ClusterIndependent
+   ClusterSpecific
+   LocalModule
    Tutorial
    API

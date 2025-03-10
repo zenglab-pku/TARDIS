@@ -3,7 +3,6 @@ ClusterSpecific
 
 .. _ClusterSpecific:
 
-
 To account for spatially clustered perturbations forming distinct clones, as observable in Lung metastatis data.
 Here the bottom-up mode of TARDIS is recommended.
 This method identifies perturbation-induced clonal formations while preserving their spatial specificity.
