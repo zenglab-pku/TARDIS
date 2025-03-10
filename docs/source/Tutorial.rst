@@ -9,17 +9,50 @@ Also, if you are new to spatial perturbation analysis, we recommend you to read 
 
 **Unpublished**
 
+.. hint:: 
+
+    **SPAC-seq**, the spatial transcriptomics based CRISPR screening technique, enables the direct
+    linkage of genetic perturbation with spatially defined cellular microenvironments by
+    integrating sgRNA reads with spatial transcriptomic profiles.
+
+    **TARDIS** represents the first dedicated software package designed specifically for spatial CRISPR screen analysis.
+
 Preparations
 ------------
 
-Before everything, we need to prepare the data.
+Before everything, prepare your spatial CRISPR screen data.
+
+.. important::
+
+    Although **TARDIS** is tested on multiple sequencing based spatial transcriptomics platforms,
+    including **BGI Stereo-seq**, **10X Genomics Visium**, and **10X Genomics Visium HD**,
+    and may not be limited to these platforms, it is still recommended to ensure that the data meets the following requirements:
+
+    - The data is spatially resolved. (e.g. Spatial barcodes are present)
+    - The data **CAN BE** from multiple tissues. (However, it is recommended to be processed separately)
+    - The data should contain **guide annotation** (e.g. Perturb-view) or **guide UMI count** matrix. (e.g. SPAC-seq)
+
+TARDIS mainly integrates two forms of data to perform statistical analysis:
+
+- **Guide Mapping Data**: Spatially resolved guide annotation or guide UMI count matrix.
+- **Spatial Transcriptomics Data**: Spatial transcriptomics data.
+
+.. warning::
+
+    The guide mapping data and spatial transcriptomics data can be obtained from the same spatial transcriptomics platform,
+    or from different spatial transcriptomics platforms.
+
+    However, be aware that different platform origin may require additional alignment that TARDIS does not provide.
 
 In this tutorial, we will use the data from **Unpublished**.
 The open-source data is available at [here](https://github.com/zenglab-pku/TARDIS-paper-data).
 
-In this set of data, we have BGI stereo-seq data of a subQ mouse MC38 tumor.
+In this set of data, we have two sets of data:
 
-This data contains 2 files:
+- BGI Stereo-seq data of a MC38 tumor, infiltrated with perturbed T cell library.
+- 10X Genomics Visium HD of subcutaneous mouse MC38 tumor, with metastatic tumor cell perturbation library.
+
+All data contains 2 files:
 
 - `guide.gem`: the GEM file of the guide-targeting data.
 - `combined.h5ad`: the combined AnnData object of the tissue Spatial Transcriptomics data and guide-targeting data.
@@ -30,8 +63,9 @@ This data contains 2 files:
     The tissue Spatial Transcriptomics data is the data that we used to perform the spatial clustering analysis.
 
     If you are performing **TARDIS** analysis on your own data, you need to combine your tissue Spatial Transcriptomics data and guide-targeting data into one AnnData object also.
+    See [here](https://tardis-tutorial.readthedocs.io/en/latest/alignment.html) for more information.
 
-After downloading the data, you can check on the data by loading the AnnData object.
+After downloading the data (or obtaining your own data), you can check on the data by loading the AnnData object.
 
 .. note:: 
 
