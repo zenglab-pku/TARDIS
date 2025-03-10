@@ -1,7 +1,11 @@
 Welcome to TARDIS!
 =======================================
 
+<<<<<<< HEAD
 This is the documentation for TARDIS, a Python package for spatial CRISPR knockout screening analysis.
+=======
+This is the documentation for TARDIS, a Python package for spatial perturbation analysis.
+>>>>>>> 4d79b24f087b803354e358ea30a0f49c8886f7fb
 
 .. image:: https://img.shields.io/pypi/v/tardis-seq.svg
    :target: https://pypi.python.org/pypi/tardis-seq
@@ -25,7 +29,11 @@ https://tardis-tutorial.readthedocs.io/en/latest/
 Introduction
 ------------
 
+<<<<<<< HEAD
 TARDIS is a tool for systematic and user-friendly identification of gene-of-interest for spatial CRISPR knockout screening data. TARDIS can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Nanopore (Oxford Nanopore Tech.). TARDIS individually provides gRNA cDNA library manipulation scripts for each platform. After raw data processing and obtaining gRNA read data, TARDIS preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering, filtering and diffusion checks.
+=======
+TARDIS is a tool for systematic and user-friendly identification of gene-of-interest for spatial CRISPR perturbation data. TARDIS can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Nanopore (Oxford Nanopore Tech.). TARDIS individually provides gRNA cDNA library manipulation scripts for each platform. After raw data processing and obtaining gRNA read data, TARDIS preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering, filtering and diffusion checks.
+>>>>>>> 4d79b24f087b803354e358ea30a0f49c8886f7fb
 The main TARDIS algorithm contains 2 cluster aware ranking method and 3 cluster unaware ranking method. Users can run all 5 method and derive consistency analysis with different methods to determine their results and robustness of the analysis. Finally, TARDIS provides user-friendly interfaces to illustrate and output the ranking results.
 
 .. image:: ./docs/_images/Illustration.png
