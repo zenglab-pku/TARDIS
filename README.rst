@@ -1,11 +1,12 @@
 Welcome to TARDIS!
 =======================================
 
-<<<<<<< HEAD
-This is the documentation for TARDIS, a Python package for spatial CRISPR knockout screening analysis.
-=======
-This is the documentation for TARDIS, a Python package for spatial perturbation analysis.
->>>>>>> 4d79b24f087b803354e358ea30a0f49c8886f7fb
+This is the github repository for **TARDIS**.
+
+**TARDIS** (**TA**rget p**R**ioritization toolkit for perturbation **D**ata **I**n **S**patial omics)
+is a versatile and fully open-source toolkit for analyzing spatially resolved CRISPR screen data.
+
+Implemented in both **Python** and **R**.
 
 .. image:: https://img.shields.io/pypi/v/tardis-seq.svg
    :target: https://pypi.python.org/pypi/tardis-seq
@@ -29,14 +30,24 @@ https://tardis-tutorial.readthedocs.io/en/latest/
 Introduction
 ------------
 
-<<<<<<< HEAD
-TARDIS is a tool for systematic and user-friendly identification of gene-of-interest for spatial CRISPR knockout screening data. TARDIS can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Nanopore (Oxford Nanopore Tech.). TARDIS individually provides gRNA cDNA library manipulation scripts for each platform. After raw data processing and obtaining gRNA read data, TARDIS preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering, filtering and diffusion checks.
-=======
-TARDIS is a tool for systematic and user-friendly identification of gene-of-interest for spatial CRISPR perturbation data. TARDIS can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Nanopore (Oxford Nanopore Tech.). TARDIS individually provides gRNA cDNA library manipulation scripts for each platform. After raw data processing and obtaining gRNA read data, TARDIS preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering, filtering and diffusion checks.
->>>>>>> 4d79b24f087b803354e358ea30a0f49c8886f7fb
-The main TARDIS algorithm contains 2 cluster aware ranking method and 3 cluster unaware ranking method. Users can run all 5 method and derive consistency analysis with different methods to determine their results and robustness of the analysis. Finally, TARDIS provides user-friendly interfaces to illustrate and output the ranking results.
+SPAC-seq enables the direct linkage of genetic perturbation with spatially defined cellular microenvironments by
+integrating sgRNA reads with spatial transcriptomic profiles. However, the high-dimensional nature of spatial gene expression data,
+combined with multiplexed perturbation libraries sequenced from the same tissue sections, presents unique computational challenges.
 
-.. image:: ./docs/_images/Illustration.png
+To effectively prioritize peturbation targets, we developed **TARDIS**, a versatile and fully open-source toolkit for analyzing spatially resolved CRISPR screen data.
+
+TARDIS is a tool for systematic and user-friendly identification of gene-of-interest.
+TARDIS can be utilized for many sequencing techniques, including Stereo-seq (BGI), Visium (10x genomics) and Visium HD (10x genomics).
+TARDIS individually provides gRNA cDNA library manipulation scripts for each platform.
+After raw data processing and obtaining gRNA read data, TARDIS preprocesses the spatial transcriptomics data and gRNA data through many steps of filtering and processing including clustering.
+TARDIS features two analytical models: global and local prioritization.
+The global mode treats each sequenced bin as an independent categorical variable, leveraging KL-divergence to quantify perturbation-induced spatial differences across thousands of bins.
+In contrast, the local mode first partition bins into micro-niches, reducing the number of categorical variable and transforming original count data into compositional data.
+To accurately capture local perturbation enrichment, TARDIS employs Aitchison distance, a robust metric for compositional data analysis, ensuring reliable detection of spatially constrained perturbation effects.
+Users can run all 2 models and derive consistency analysis with different models to determine their results and robustness of the analysis.
+Finally, TARDIS provides user-friendly interfaces to illustrate and output the ranking results.
+
+.. image:: ./docs/_images/Illustration.jpeg
    :align: center
 
 Installation Using Python
@@ -48,20 +59,25 @@ You can simply install TARDIS dependencies using pip through:
 
 .. code-block:: 
 
-   (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy
+   (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy statsmodels
 
-**TARDIS** can be ran on both Linux and Mac OS, since it is interpreted by python and R.
+.. note:: 
+
+   Python version == 3.12 is recommended.
+
+Other dependencies will be installed automatically.
+For illustration modules, *Seaborn* and *Matplotlib* are required.
 
 Installation Using R
 ------------
 
-To install TARDIS (R version), first intall *dev-tools*
+To install TARDIS (R version), first intall *dev-tools* and *remotes* packages.
 
 .. code-block::
 
    $ install.packages('devtools')
    $ devtools::install_github("zenglab-pku/TARDIS")
-
+   
 R will automatically install all the dependencies.
 
 For more detailed information, please refer to the tutorial.
