@@ -67,10 +67,21 @@ All data contains 2 files:
 
 After downloading the data (or obtaining your own data), you can check on the data by loading the AnnData object.
 
-.. note:: 
+.. tip:: 
 
     Remember to move the data to the directory where you are running the code.
     Jupyter notebook is recommended for this tutorial.
+
+Infiltrated T cell library
+--------------------------
+
+In this section, we will perform **TARDIS** analysis on the infiltrated T cell library.
+This data is from **BGI Stereo-seq** platform.
+
+Basic information of the data:
+
+- The sample is sliced from a MC38 tumor, with perturbation of T cell injected, disected and sequenced on day 7 of tumor growth.
+- The data contains 68 guides, with each perturbation of gene 2 different guide, 2 guides for non-targeting control.
 
 .. code-block::
 
@@ -88,14 +99,14 @@ You will receive the following output:
 .. note::
 
     The AnnData object contains the tissue Spatial Transcriptomics data and guide-targeting data.
-    The `spatial` is the spatial coordinates of the data, which is used for spatial clustering analysis.
+    The `obsm['spatial']` is the spatial coordinates of the data, which is used for spatial clustering analysis.
     The `var_names` is the variable names of the data, which is used for guide distribution analysis.
-    The `obs_names` is the observation names of the data, which is used to contain the bin information.
+    The `obs_names` is the observation names of the data, which is used to contain the bin information
 
 More information about the AnnData object can be found at [here](https://scanpy.readthedocs.io/en/stable/api/scanpy.AnnData.html).
 
 Importing necessary libraries
-------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before starting, we need to import necessary libraries.
 
@@ -108,9 +119,11 @@ Before starting, we need to import necessary libraries.
     import seaborn as sns
     import pandas as pd
 
-    import sp.preprocessing as spp
+Note that **TARDIS** will import all above libraries automatically. But in this manner you can use abbreviations for the libraries.
 
-**TARDIS** required dependencies import.
+.. code-block::
+
+    import tardis as td
 
 .. note::
 
@@ -118,7 +131,23 @@ Before starting, we need to import necessary libraries.
     scanpy and squidpy are required for spatial clustering analysis, numpy is required for numerical operations,
     matplotlib and seaborn are required for visualization, and pandas is required for data manipulation.
 
-Read in the data.
+In SPAC-seq, guide count matrix is stored in 'gem' file.
+A gem file is a table file derived from the 'gef' file, which is the output of the **BGI SAW** software. (See `here <https://github.com/STOmics/SAW>`_)
+A gem file is a tab-separated file with the following columns:
+
+- `index`: the identical index of the guide detection
+- `guide`: the guide name
+- `x`: the x coordinate of the guide detection
+- `y`: the y coordinate of the guide detection
+- `MIDCount`: the guide count
+- `ExonCount`: the detected exon count, usually same to `MIDCount`
+
+We can read the gem file using pandas.
+
+.. note::
+
+    `gem` file can be directly read by our module `tardis.io.load_bin()`
+    however, we will show you how to read the file using pandas for preprocessing.
 
 .. code-block::
 
@@ -128,22 +157,19 @@ Read in the data.
 .. image:: ../_images/gem_head.png
    :align: center
 
-Preprocessing
-------------
+Filtering and Quality Control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spatial perturbation can be highly arbitrary if we cannot perform valid
-preprocessing and filtering of low quality guides and bins. Refer to [our paper](https://www.nature.com/articles/s41592-024-02012-z)
-for our in house filtering method.
+preprocessing and filtering of low quality guides and bins. Refer to **Unpublished** (Fig. S12)
+for difference between filtered and unfiltered guide distribution.
 
 **TARDIS** performs filtering with validation panels with the following methods.
-
-In this tutorial we use our in house spatial transcriptomics data.
-This data incorporates a library of **68 guides**, and is sequenced on **BGI Stereo-seq** platform.
 
 .. code-block::
 
    # perform quality check from BGI stereo-seq GEM output
-   sp.preprocessing.filter_qc_bins('guide.gem')
+   td.preprocess.filter_qc_bins('guide.gem')
 
 .. image:: ../_images/qc_guide_bins.png
    :align: center
