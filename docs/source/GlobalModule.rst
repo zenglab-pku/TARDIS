@@ -1,4 +1,4 @@
-Global Module
+GlobalModule
 =================
 
 .. _GlobalModule:

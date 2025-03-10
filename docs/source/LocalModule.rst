@@ -1,4 +1,4 @@
-Local Module
+LocalModule
 ===============
 
 .. _LocalModule:

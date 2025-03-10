@@ -1,4 +1,4 @@
-Cluster Specific
+ClusterSpecific
 =================
 
 .. _ClusterSpecific:
