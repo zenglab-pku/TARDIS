@@ -1,7 +1,7 @@
-ClusterDependent
+Local Module
 ===============
 
-.. _ClusterDependent:
+.. _LocalModule:
 
 CLuster PERMANOVA
 -----------------
@@ -36,20 +36,20 @@ Example usage:
 All PERMANOVA test results are stored in the :py:attr:`adata.uns` attribute named 'PERMANOVA p-value' by default.
 
 
-Chi-square Test Ranking
+Aitchison Distance Ranking
 -----------------------
 
-The Chi-square test ranking function helps identify guides with significantly different distributions across clusters compared to a control guide.
+The Aitchison distance ranking function helps identify guides with significantly different distributions across clusters compared to a control guide.
 
-.. py:function:: rank_by_chi_square(adata, cluster_field, control_guide='sgNon-targeting', guide_list=None, result_field='Chi2 p-value')
+.. py:function:: rank_by_aitchison_distance(adata, cluster_field, control_guide='sgNon-targeting', guide_list=None, result_field='Aitchison distance')
 
-   Ranks guides by their chi-square test p-value compared to a control guide distribution across clusters.
+   Ranks guides by their Aitchison distance compared to a control guide distribution across clusters.
 
    :param adata: AnnData object containing spatial transcriptomics data
    :param cluster_field: Name of the clustering field in adata.obs to use for grouping
    :param control_guide: Name of the control guide to compare against. Default is 'sgNon-targeting'.
    :param guide_list: Optional list of guides to analyze. If None, all guides will be analyzed. Default is None.
-   :param result_field: Name of the field to store results in adata.uns. Default is 'Chi2 p-value'.
+   :param result_field: Name of the field to store results in adata.uns. Default is 'Aitchison distance'.
    :return: None. Results are stored in adata.uns[result_field] as a pandas DataFrame.
 
 The function performs chi-square tests comparing each guide's distribution across clusters to the control guide's distribution. A lower p-value indicates a more significant difference from the control guide pattern.
@@ -59,8 +59,8 @@ Example usage:
 .. code-block:: 
 
     import tardis as td
-    td.cluster_dependent.rank_by_chi_square(adata, cluster_field='leiden')
-    td.cluster_dependent.plot_ranking(adata, 'Chi2 p-value')
+    td.cluster_dependent.rank_by_aitchison_distance(adata, cluster_field='leiden')
+    td.cluster_dependent.plot_ranking(adata, 'Aitchison distance')
 
 The result is shown below.
 
@@ -79,7 +79,7 @@ We can also check the distribution of the guides with low Chi2 p-value.
 
 .. note::
 
-    Chi-square test ranking requires clustering information. Make sure to perform clustering on your data first.
+    Aitchison distance ranking requires clustering information. Make sure to perform clustering on your data first.
     The test evaluates whether guides show significantly different patterns across clusters compared to the control.
 
 All chi-square test results are stored in the :py:attr:`adata.uns` attribute named 'Chi2 p-value' by default.

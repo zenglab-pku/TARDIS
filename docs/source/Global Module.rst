@@ -1,7 +1,7 @@
-ClusterIndependent
+Global Module
 =================
 
-.. _ClusterIndependent:
+.. _GlobalModule:
 
 Kernel Density Estimation and Wasserstein Distance
 ----------------------------------------------------
