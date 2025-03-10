@@ -30,8 +30,8 @@ Example usage:
 
 .. code-block::
 
-   import spot as sp
-   adata = sp.cluster_cellcharter(adata, batch_key='batch', n_clusters=12, save_model='cellcharter_model.pkl')
+   import tardis as td
+   adata = td.cluster_cellcharter(adata, batch_key='batch', n_clusters=12, save_model='cellcharter_model.pkl')
 
     palette = ['turquoise', 'lightcoral', 'steelblue', 'darkslateblue', 'teal', 'cornflowerblue', 'wheat', 'lightpink']
     sns.scatterplot(x=adata.obsm['spatial'][:, 0], y=adata.obsm['spatial'][:, 1], s=8,

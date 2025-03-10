@@ -24,9 +24,9 @@ Example usage:
 
 .. code-block::
 
-    import spot as sp
-    sp.rank_by_cluster_permanova(adata, cluster_field='leiden')
-    sp.plot_ranking(adata, 'PERMANOVA p-value')
+    import tardis as td
+    td.rank_by_cluster_permanova(adata, cluster_field='leiden')
+    td.plot_ranking(adata, 'PERMANOVA p-value')
 
 .. note::
 
@@ -58,9 +58,9 @@ Example usage:
 
 .. code-block:: 
 
-    import B_cluster_independent
-    B_cluster_independent.rank_by_chi_square(adata, cluster_field='leiden')
-    D_plot_ranking.plot_ranking_bar(adata, 'Chi2 p-value')
+    import tardis as td
+    td.cluster_dependent.rank_by_chi_square(adata, cluster_field='leiden')
+    td.cluster_dependent.plot_ranking(adata, 'Chi2 p-value')
 
 The result is shown below.
 

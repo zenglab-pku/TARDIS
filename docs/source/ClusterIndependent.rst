@@ -26,8 +26,8 @@ Example usage:
 
 .. code-block::
 
-   import spot as sp
-   results = sp.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
+   import tardis as td
+   results = td.cluster_independent.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
 
 The results show the Wasserstein distance between each guide and the control group, with larger distances indicating more significant spatial distribution differences. Asterisks (*) indicate statistical significance with p-value < 0.05.
 

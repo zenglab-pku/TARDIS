@@ -3,19 +3,19 @@ Tutorial
 
 .. _Tutorial:
 
-This is an step-by-step tutorial for **SPOT** analysis. If you are new to **SPOT**, we recommend you to follow this tutorial.
+This is an step-by-step tutorial for **TARDIS** analysis. If you are new to **TARDIS**, we recommend you to follow this tutorial.
 
 Also, if you are new to spatial perturbation analysis, we recommend you to read the following paper:
 
-[Our paper](https://www.nature.com/articles/s41592-024-02012-z)
+**Unpublished**
 
 Preparations
 ------------
 
 Before everything, we need to prepare the data.
 
-In this tutorial, we will use the data from [our paper](https://www.nature.com/articles/s41592-024-02012-z).
-The open-source data is available at [here](https://github.com/ZengLab/SPOT-paper-data).
+In this tutorial, we will use the data from **Unpublished**.
+The open-source data is available at [here](https://github.com/zenglab-pku/TARDIS-paper-data).
 
 In this set of data, we have BGI stereo-seq data of a subQ mouse MC38 tumor.
 
@@ -29,7 +29,7 @@ This data contains 2 files:
     The guide-targeting data is the data that we used to guide the perturbation.
     The tissue Spatial Transcriptomics data is the data that we used to perform the spatial clustering analysis.
 
-    If you are performing **SPOT** analysis on your own data, you need to combine your tissue Spatial Transcriptomics data and guide-targeting data into one AnnData object also.
+    If you are performing **TARDIS** analysis on your own data, you need to combine your tissue Spatial Transcriptomics data and guide-targeting data into one AnnData object also.
 
 After downloading the data, you can check on the data by loading the AnnData object.
 
@@ -76,11 +76,11 @@ Before starting, we need to import necessary libraries.
 
     import sp.preprocessing as spp
 
-**SPOT** required dependencies import.
+**TARDIS** required dependencies import.
 
 .. note::
 
-    Import **SPOT** usint python, you can utilize scanpy, squidpy, numpy, matplotlib, seaborn, and pandas.
+    Import **TARDIS** using python, you can utilize scanpy, squidpy, numpy, matplotlib, seaborn, and pandas.
     scanpy and squidpy are required for spatial clustering analysis, numpy is required for numerical operations,
     matplotlib and seaborn are required for visualization, and pandas is required for data manipulation.
 
@@ -101,7 +101,7 @@ Spatial perturbation can be highly arbitrary if we cannot perform valid
 preprocessing and filtering of low quality guides and bins. Refer to [our paper](https://www.nature.com/articles/s41592-024-02012-z)
 for our in house filtering method.
 
-**SPOT** performs filtering with validation panels with the following methods.
+**TARDIS** performs filtering with validation panels with the following methods.
 
 In this tutorial we use our in house spatial transcriptomics data.
 This data incorporates a library of **68 guides**, and is sequenced on **BGI Stereo-seq** platform.
@@ -282,7 +282,7 @@ to demonstrate the distribution of the guides with low Chi2 p-value.
 All chi-square test results are stored in the :py:attr:`adata.uns` attribute named 'Chi2 p-value' by default.
 
 Before we can move on to cluster independent analysis, we can try identifying the guide's specificity in a particular cluster.
-**SPOT** provides a function :py:func:`sp.cluster_independent.volcano_plot()` to perform chi-square test on a particular cluster for each guide,
+**TARDIS** provides a function :py:func:`sp.cluster_independent.volcano_plot()` to perform chi-square test on a particular cluster for each guide,
 determining the specificity of each guide in the cluster.
 
 Similar to RNA-seq analysis, we can perform volcano plot to visualize the guide's specificity in a particular cluster.

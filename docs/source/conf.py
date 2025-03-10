@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'SPOT'
+project = 'TARDIS'
 copyright = '2024, Trasond'
 author = 'Trasond'
 

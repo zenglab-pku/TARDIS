@@ -3,7 +3,7 @@ NMF
 
 .. _NMF:
 
-.. py:function:: A_preprocessing.nmf_clustering(adata, n_components=10, random_state=42, max_iter=1000, verbose=0, n_top_genes=2000)
+.. py:function:: tardis.preprocessing.nmf_clustering(adata, n_components=10, random_state=42, max_iter=1000, verbose=0, n_top_genes=2000)
 
    Performs NMF clustering on AnnData object.
 
@@ -15,7 +15,7 @@ NMF
    :param n_top_genes: Number of highly variable genes to use
    :return: AnnData object with NMF results in .obsm['X_nmf'] and .uns['X_nmf_components']
 
-.. py:function:: A_preprocessing.nmf_consensus(adata, min_clusters=4, max_clusters=10, n_resamples=100, resample_frac=0.8, random_state=42, n_cluster_genes=50)
+.. py:function:: tardis.preprocessing.nmf_consensus(adata, min_clusters=4, max_clusters=10, n_resamples=100, resample_frac=0.8, random_state=42, n_cluster_genes=50)
 
    Performs consensus clustering on NMF results.
 

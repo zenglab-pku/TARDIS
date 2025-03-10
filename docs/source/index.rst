@@ -1,15 +1,15 @@
-Welcome to SPOT's documentation!
+Welcome to TARDIS's documentation!
 ===================================
 
-**SPOT** (Spatial Perturbation Omics analysis Toolkit) is a model based toolkit for spaital CRISPR knockout screening analysis.
+**TARDIS** (TArget pRioritization toolkit for CRISPR Data In Spatial-omics) is a model based toolkit for tissue-specific CRISPR knockout screening analysis.
 
-.. image:: ../_images/LOGO.png
-   :align: center
+# .. image:: ../_images/LOGO.png
+#    :align: center
 
-**SPOT** is a free, open-source software for both python and R environment users under the MIT license.
+**TARDIS** is a free, open-source software for both python and R environment users under the MIT license.
 Please cite the paper `Paper here` when using the toolkit.
 
-Offcial documentation `can be found here at <https://spot-tutorial.readthedocs.io/en/latest/>`
+Offcial documentation `can be found here at <https://tardis-tutorial.readthedocs.io/en/latest/>`
 
 Refer to our `SPAC-seq analysis tutorial <https://github.com/pkuTrasond/SPAC-seq/tree/master>`,
 it offers a *simple* and *intuitive* API.

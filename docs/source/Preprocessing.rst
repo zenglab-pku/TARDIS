@@ -5,15 +5,15 @@ Preprocessing
 
 .. note::
 
-   This here is an API version of all the functions applicable in **SPOT**,
+   This here is an API version of all the functions applicable in **TARDIS**,
    For more detailed and thorough reference please visit our :ref:`tutorial` site.
 
 Preprocessing
 ----------------
 
-Filtering using :py:func:`preprocessing.filter_guide_reads()`
+Filtering using :py:func:`tardis.preprocessing.filter_guide_reads()`
 
-.. py:function:: filter_guide_reads(gem_path, guide_prefix=None, output_path=None, binarilize=False, assign_pattern='max', filter_threshold=None)
+.. py:function:: tardis.preprocessing.filter_guide_reads(gem_path, guide_prefix=None, output_path=None, binarilize=False, assign_pattern='max', filter_threshold=None)
 
    Filter and process guide reads from a GEM file.
 
