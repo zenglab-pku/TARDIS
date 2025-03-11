@@ -191,17 +191,17 @@ Example usage:
 
 .. code-block::
 
-   filtered_data = sp.filter_guide_reads('A04091E1.gem', output_path='A04091E1_filtered.gem')
+   filtered_data = td.preprocess.filter_guide_reads('A04091E1.gem', output_path='A04091E1_filtered.gem')
 
 After filtering, we can perform quality control on the filtered data.
 
 .. code-block::
 
-   sp.preprocessing.filter_qc_bins('A04091E1_filtered.gem')
+   td.preprocess.filter_qc_bins('A04091E1_filtered.gem')
 
    plt.figure(figsize=(8, 6))
-   scatter = plt.scatter(x=gdata.obsm['spatial'][:, 0], y=gdata.obsm['spatial'][:, 1],
-                        s=gdata.obs['n_genes_by_counts'], alpha=0.5, c=gdata.obs['total_counts'], cmap='viridis')
+   scatter = plt.scatter(x=fdata.obsm['spatial'][:, 0], y=fdata.obsm['spatial'][:, 1],
+                        s=fdata.obs['n_genes_by_counts'], alpha=0.5, c=fdata.obs['total_counts'], cmap='viridis')
    sns.despine()
    plt.colorbar(scatter, label='Total counts')
    plt.title('Guide reads')
@@ -212,7 +212,7 @@ After filtering, we can perform quality control on the filtered data.
    :align: center
 
 Clustering
-----------
+^^^^^^^^^^^^
 
 Cluster the tissue data means finding similarity of bins in the tissue data implicating the same microenvironment.
 
@@ -252,7 +252,7 @@ Then we perform NMF on the filtered data with a simple function. :py:func:`spp.n
 
 .. code-block::
 
-    nmf_data = spp.nmf_clustering(fdata, n_components=50)
+    nmf_data = td.preprocess.nmf_clustering(fdata, n_components=50)
 
 .. note::
 
@@ -261,7 +261,7 @@ Then we perform NMF on the filtered data with a simple function. :py:func:`spp.n
 
 .. code-block::
 
-    clustered_nmf_data = spp.nmf_consensus(nmf_data)
+    clustered_nmf_data = td.preprocess.nmf_consensus(nmf_data)
 
 .. image:: ../_images/nmf_cluster.png
    :align: center

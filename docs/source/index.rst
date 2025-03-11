@@ -28,8 +28,8 @@ Contents
    NMF
    Cellcharter
    GlobalModule
-   ClusterIndependent
    ClusterSpecific
    LocalModule
+   IO
    Tutorial
    API
