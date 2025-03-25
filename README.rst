@@ -3,7 +3,7 @@ Welcome to TARDIS!
 
 This is the github repository for **TARDIS**.
 
-**TARDIS** (**TA**rget p**R**ioritization toolkit for perturbation **D**ata **I**n **S**patial omics)
+**TARDIS** (TArget pRioritization toolkit for perturbation Data In Spatial omics)
 is a versatile and fully open-source toolkit for analyzing spatially resolved CRISPR screen data.
 
 Implemented in both **Python** and **R**.
@@ -60,6 +60,7 @@ You can simply install TARDIS dependencies using pip through:
 .. code-block:: 
 
    (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy statsmodels
+   (.venv) $ pip install tardis_spac
 
 .. note:: 
 
