@@ -16,7 +16,7 @@ Implemented in both **Python** and **R**.
    :alt: Documentation Status
 
 .. image:: https://img.shields.io/github/license/zenglab-pku/TARDIS
-   :target: https://github.com/zenglab-pku/TARDIS/blob/main/LICENSE
+   :target: https://github.com/zenglab-pku/TARDIS/blob/master/LICENSE
    :alt: License
 
 .. image:: https://img.shields.io/github/stars/zenglab-pku/TARDIS?style=social
