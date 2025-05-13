@@ -3,20 +3,20 @@ Welcome to TARDIS!
 
 This is the github repository for **TARDIS**.
 
-**TARDIS** (**TA**rget p**R**ioritization toolkit for perturbation **D**ata **I**n **S**patial omics)
+**TARDIS** (TArget pRioritization toolkit for perturbation Data In Spatial omics)
 is a versatile and fully open-source toolkit for analyzing spatially resolved CRISPR screen data.
 
 Implemented in both **Python** and **R**.
 
-.. image:: https://img.shields.io/pypi/v/tardis-seq.svg
-   :target: https://pypi.python.org/pypi/tardis-seq
+.. image:: https://img.shields.io/pypi/v/tardis-spac.svg
+   :target: https://pypi.python.org/pypi/tardis-spac
 
-.. image:: https://readthedocs.org/projects/tardis-seq/badge/?version=latest
-   :target: https://tardis-seq.readthedocs.io/en/latest/?badge=latest
+.. image:: https://app.readthedocs.org/projects/tardis-tutorial/badge/?version=latest
+   :target: https://tardis-tutorial.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
 .. image:: https://img.shields.io/github/license/zenglab-pku/TARDIS
-   :target: https://github.com/zenglab-pku/TARDIS/blob/main/LICENSE
+   :target: https://github.com/zenglab-pku/TARDIS/blob/master/LICENSE
    :alt: License
 
 .. image:: https://img.shields.io/github/stars/zenglab-pku/TARDIS?style=social
@@ -60,6 +60,7 @@ You can simply install TARDIS dependencies using pip through:
 .. code-block:: 
 
    (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy statsmodels
+   (.venv) $ pip install tardis_spac
 
 .. note:: 
 
