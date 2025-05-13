@@ -26,7 +26,7 @@ You can simply install TARDIS dependencies using pip through:
 
    Both python and R version requires *python* to run **Cluster dependent** analysis. since
    they require *Cellcharter* to perform clustering.
-
+   
    If other clustering method is performed, follow the instructions in :ref:`tutorial` to perform
    downstream analysis.
 
