@@ -3,13 +3,17 @@ Welcome to TARDIS's documentation!
 
 **TARDIS** (TArget pRioritization toolkit for CRISPR Data In Spatial-omics) is a model based toolkit for tissue-specific CRISPR knockout screening analysis.
 
+.. image:: ../_images/main_tardis_desc.jpg
+   :alt: TARDIS Overview
+   :align: center
+   :width: 1200px
+
 **TARDIS** is a free, open-source software for both python and R environment users under the MIT license.
 Please cite the paper `Paper here` when using the toolkit.
 
-Offcial documentation `can be found here at <https://tardis-tutorial.readthedocs.io/en/latest/>`
+Official documentation can be found `here <https://tardis-tutorial.readthedocs.io/en/latest/>`_.
 
-Refer to our `SPAC-seq analysis tutorial <https://github.com/pkuTrasond/SPAC-seq/tree/master>`,
-it offers a *simple* and *intuitive* API.
+Refer to our **SPAC-seq** website for data download and analysis at `https://spac.pku-genomics.org <https://spac.pku-genomics.org>`_.
 
 Check out the :doc:`Usage` section for further information, including
 how to :ref:`Installation` the project.
@@ -32,3 +36,10 @@ Contents
    LocalModule
    IO
    API
+
+Contacts
+--------
+
+If you have any questions or suggestions, please feel free to contact me at `Barry Wang <barry_2001@stu.pku.edu.cn>`_.
+
+Please also feel free to contact `Dr. Zexian Zeng <zexianzeng@pku.edu.cn>`_ if you are interested in the spatial CRISPR screen data analysis.
