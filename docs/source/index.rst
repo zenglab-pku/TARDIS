@@ -42,7 +42,7 @@ Contents
    LocalModule
    Tutorial
 
-Contactså
+Contacts
 --------
 
 If you have any questions or suggestions, please feel free to contact me at `Barry Wang <barry_2001@stu.pku.edu.cn>`_.
