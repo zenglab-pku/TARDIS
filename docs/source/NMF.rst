@@ -95,6 +95,9 @@ Gene program NMF Consensus Clustering using :py:func:`tardis_spac.utils.nmf_cons
 .. admonition:: Usage
 
    With NMF consensus clustering, the gene programs are further refined by computing the consensus clustering of the NMF results.
+   
    This is done by resampling the spots and computing the NMF results for each resample.
+   
    The consensus clustering is then computed by averaging the NMF results across the resamples.
+   
    The gene scores are then computed by averaging the NMF results across the resamples for each gene.

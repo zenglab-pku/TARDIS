@@ -1,0 +1,10 @@
+{% extends "!layout.html" %}
+
+{% block sidebartitle %}
+  {{ super() }}
+  <div class="sidebar-icon">
+    <img src="{{ pathto('_static/main_tardis_icon.png', 1) }}"
+         alt="TARDIS icon"
+         width="96">
+  </div>
+{% endblock %}

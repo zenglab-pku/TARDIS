@@ -1,0 +1,10 @@
+.sidebar-icon {
+    text-align: center;
+    padding: 0.5em 0 0.25em;
+  }
+  
+  .sidebar-icon img {
+    max-width: 96px;
+    height: auto;
+    border-radius: 8px;
+  }
