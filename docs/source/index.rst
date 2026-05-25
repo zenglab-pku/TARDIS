@@ -40,9 +40,9 @@ Contents
    GlobalModule
    ClusterSpecific
    LocalModule
-   API
+   Tutorial
 
-Contacts
+Contactså
 --------
 
 If you have any questions or suggestions, please feel free to contact me at `Barry Wang <barry_2001@stu.pku.edu.cn>`_.
