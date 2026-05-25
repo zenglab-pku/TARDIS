@@ -31,10 +31,22 @@ Use **SPAC-seq** script *SeekSeq* to process your enriched guide FASTQ files.
    It is not a part of **TARDIS** toolkit.
    refer to **SPAC-seq** official code repository `SPAC-seq <https://github.com/zenglab-pku/SPAC-seq/blob/main/fig_3_seekseq.py>`_ for more details.
 
+   In **SeekSeq**, we filter the guide reads by the following criteria:
+   - R1 containing constant region "TTGTCTTCCTAAGAC" with a max error rate of 1 base mismatch.
+   - R2 containing scaffold region "GTTTTAGA" with a max error rate of 1 base mismatch.
+
+   See our paper for more details: [Unpublished].
+
+Successfully processed, you should be able to find guide reads in your *guide.gem* file in SAW output directory.
+
 TARDIS preprocessing functions
 ------------------------------
 
 Quality Control of Guide Bins using :py:func:`tardis.preprocessing.qc_guide_bins()`
+
+.. note::
+   For Stereoseq data only.
+   For Visium HD data, you can apply `scanpy.pp.calculate_qc_metrics <https://scanpy.readthedocs.io/en/stable/api/scanpy.pp.calculate_qc_metrics.html>`_ to calculate the quality metrics of the guide bins.
 
 .. py:function:: tardis.preprocessing.qc_guide_bins(gem_path, guide_prefix=None, fig_path=None)
 
@@ -47,6 +59,10 @@ Quality Control of Guide Bins using :py:func:`tardis.preprocessing.qc_guide_bins
 
 Remove Mitochondrial, Ribosomal, Housekeeping, and lncRNA Genes using :py:func:`tardis.preprocessing.remove_mito_ribo_hk_lnc_genes()`
 
+.. note::
+   Housekeeping gene list is from `He2020Nature_mouseHK.txt <https://github.com/zenglab-pku/SPAC-seq/blob/main/He2020Nature_mouseHK.txt>`_.
+   Refer to `Nature paper <https://github.com/brianpenghe/Matlab-genomics/blob/master/He_2020_ENCODE3_RNA/GeneLists/Bulk Cluster Ubiquitous.txt>`_ for more details.
+
 .. py:function:: tardis.preprocessing.remove_mito_ribo_hk_lnc_genes(adata, housekeeping_list="He2020Nature_mouseHK.txt")
 
    Remove genes related to mitochondria, ribosomes, housekeeping, or annotated as lncRNAs from the dataset.
@@ -56,6 +72,11 @@ Remove Mitochondrial, Ribosomal, Housekeeping, and lncRNA Genes using :py:func:`
    :return: AnnData object with unwanted genes removed.
 
 Filter and Process Guide Reads using :py:func:`tardis.preprocessing.filter_guide_reads()`
+This process is essential for removing noise guide reads and keeping major signals for more accurate analysis.
+
+.. note::
+   For Stereoseq data only.
+   For Visium HD data, we recommend running **TARDIS** directly.
 
 .. py:function:: tardis.preprocessing.filter_guide_reads(gem_path, guide_prefix=None, output_path=None, binarilize=False, assign_pattern='max', filter_threshold=None)
 
