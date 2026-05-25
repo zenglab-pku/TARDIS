@@ -5,7 +5,7 @@ Tutorial
 
 This is a step-by-step tutorial for **TARDIS** analysis.
 
-*If you are new to **TARDIS**, we recommend you to follow `this tutorial <https://tardis-tutorial.readthedocs.io/en/latest/>`_.*
+*If you are new to* **TARDIS**, *we recommend you to follow* `this tutorial <https://tardis-tutorial.readthedocs.io/en/latest/>`_.*
 
 Also, if you are new to spatial perturbation analysis, we recommend you to read the following paper:
 
@@ -388,5 +388,413 @@ All KL distance results are stored in the :py:attr:`adata.uns` attribute named '
 
     KL divergence test requires reference guide. Make sure to set the reference guide correctly using the `reference_guide` parameter.
     The reference guide can be set to 'sum' or 'ntc' (non-targeting control guide).
+
+Perturbed subcutaneous tumor model
+------------------------------------
+
+In this section, we will perform perturbed subcutaneous tumor model analysis.
+
+We will use the perturbed subcutaneous tumor model data.
+
+.. note::
+
+    In this part, we **DID NOT** perform *Cellcharter* analysis for spaitally awared clustering.
+    Rather, we used *graphclust* clustering from Spaceranger output.
+
+.. code:: ipython3
+
+    import tardis_spac as td
+    
+    import scanpy as sc
+    import anndata as ad
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    import numpy as np
+    from scipy import sparse
+    
+    from tqdm import tqdm
+
+The following h5 files can be downloaded from above link.
+
+.. code:: ipython3
+
+    guide_adata = sc.read_h5ad('filtered_guide_bc_matrix.h5')
+    rna_adata = sc.read_h5ad('filtered_gene_bc_matrix.h5')
+
+
+.. parsed-literal::
+
+    /path/to/anndata/_core/anndata.py:1884: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+      utils.warn_names_duplicates("var")
+
+
+Make sure to make the variable names unique.
+
+.. code:: ipython3
+
+    rna_adata.var_names_make_unique()
+
+.. code:: ipython3
+
+    rna_adata
+
+
+
+.. parsed-literal::
+
+    AnnData object with n_obs × n_vars = 632032 × 19059
+        obs: 'in_tissue', 'array_row', 'array_col'
+        var: 'gene_ids', 'feature_types', 'genome'
+        obsm: 'spatial'
+
+
+
+.. code:: ipython3
+
+    guide_adata
+
+
+
+
+.. parsed-literal::
+
+    AnnData object with n_obs × n_vars = 632032 × 1520
+        obs: 'in_tissue', 'array_row', 'array_col'
+        var: 'gene_ids', 'feature_types', 'genome'
+        obsm: 'spatial'
+
+**TARDIS** provides a function :py:func:`td.utils.plot.plot_spatial_guides()` to plot the spatial guides.
+
+.. note::
+
+    *Image* can be provided together with scale_factor to plot the spatial guides on the HE for reference.
+
+.. code:: ipython3
+
+    _, ax = plt.subplots(figsize=(5, 5))
+    td.utils.plot.plot_spatial_guides(guide_adata, scale_factor=scalefactors, s=1, ax=ax)
+    plt.show()
+
+
+
+.. image:: ../_images/tutorial_tumor_5_0.png
+
+
+General quanlity control
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: ipython3
+
+    guide_adata.var['n_total_counts'] = guide_adata.X.toarray().sum(axis=0)
+
+.. code:: ipython3
+
+    sc.pl.highest_expr_genes(guide_adata, n_top=20, show=True)
+
+
+.. parsed-literal::
+
+    /tmp/ipykernel_39694/2812346091.py:1: UserWarning: Some cells have zero counts
+      sc.pl.highest_expr_genes(guide_adata, n_top=20, show=True)
+
+
+
+.. image:: ../_images/tutorial_tumor_7_1.png
+
+A robust CRISPR screening should have a good distribution of the guides with high expression.
+
+.. code:: ipython3
+
+    td.utils.plot_guide_gene_summary(guide_adata)
+
+
+
+.. image:: ../_images/tutorial_tumor_8_0.png
+
+
+Clone calling for tumor Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In tumor models, we would like to call the clones from the spatial guides.
+
+To identify clonal perturbations that locally expanded in the metastatic screen
+(defined as spatially proximal tumor bins with the same perturbation),
+ensity-based spatial clustering of applications with noise (DBSCAN) and kernel density estimation (KDE) were performed for each perturbation within each tissue section. 
+
+**TARDIS** provides a function :py:func:`td.utils.dbscan_density_region()` to perform dbscan density region clustering.
+
+.. note::
+    
+    For recovery of larget clones, try raising the *eps* parameter.
+    For recovery of small clones, try lowering the *min_samples* parameter.
+
+    Remember to tune *eps* according to the spatial resolution of the platform.
+    For example, for 10x Visium data, *eps* should be set to 5-10. (*~8 pixels per 2um bin*)
+
+.. code:: ipython3
+
+    perturb_data, perturb_points_df = td.utils.dbscan_density_region(
+        guide_adata,
+        "sgBcam_2",
+        eps=20,
+        min_samples=10,
+        label="0",
+        mode="most",
+        density_level=7,
+    )
+
+
+.. parsed-literal::
+
+    Number of Clusters (excluding noise): 25
+
+We can visualize the clone calling result.
+
+.. code:: ipython3
+
+    _, ax = plt.subplots(figsize=(5, 5))
+    sns.scatterplot(
+        data=perturb_points_df,
+        x="pxl_row_in_fullres",
+        y="pxl_col_in_fullres",
+        s=2,
+        edgecolor="none",
+        ax=ax,
+    )
+    plt.axis('off')
+    plt.show()
+
+
+
+.. image:: ../_images/tutorial_tumor_11_0.png
+
+
+Here we call top 50 guides with high expression.
+
+.. code:: ipython3
+
+    top_clones = guide_adata.var['n_total_counts'].nlargest(50).index.tolist()
+    perturb_points_merge_df = pd.DataFrame()
+    perturb_data_list = []
+    for clone in tqdm(top_clones):
+        perturb_data, perturb_points_df = td.utils.dbscan_density_region(
+            guide_adata,
+            clone,
+            eps=20,
+            min_samples=10,
+            label="0",
+            mode="most",
+            density_level=7,
+        )
+        perturb_data = perturb_data[perturb_data.obs['dbscan_cluster'] != '-1'].copy()
+        perturb_data_list.append(perturb_data)
+        perturb_points_df['clone'] = clone
+        perturb_points_merge_df = pd.concat([perturb_points_merge_df, perturb_points_df])
+    perturb_points_merge_df.groupby('clone').size().sort_values(ascending=False)
+
+
+.. parsed-literal::
+
+    100%|██████████| 50/50 [02:54<00:00,  3.49s/it]
+
+
+
+
+.. parsed-literal::
+
+    clone
+    sgBcam_2        26779
+    sgApp_1         12063
+    sgCks1b_2       11448
+    sgTff3_1        10704
+    ...
+    sgAnk_1          1284
+    dtype: int64
+
+Visualize the clone calling result for top 50 guides with high expression.
+
+.. code:: ipython3
+
+    _, ax = plt.subplots(figsize=(5, 5))
+    sns.scatterplot(
+        data=perturb_points_merge_df,
+        x="pxl_row_in_fullres",
+        y="pxl_col_in_fullres",
+        hue="clone",
+        palette="gist_ncar",
+        s=0.2,
+        edgecolor="none",
+        ax=ax,
+        legend=False,
+    )
+    plt.axis('off')
+    plt.show()
+
+
+
+.. image:: ../_images/tutorial_tumor_13_0.png
+
+
+Niche specific analysis
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A tumor clone can be identified to be specificly distributed in a particular niche.
+
+.. code:: ipython3
+
+    rna_adata.obs['graphclust'] = pd.read_csv('/data200T/SPACseq/HD/output/subq/outs/binned_outputs/square_008um/analysis/clustering/gene_expression_graphclust/clusters.csv', index_col=0)['Cluster'].astype(str)
+
+.. code:: ipython3
+
+    _, ax = plt.subplots(figsize=(5, 5))
+    sns.scatterplot(
+        data=rna_adata.obs,
+        x='array_col',
+        y='array_row',
+        hue='graphclust',
+        palette='tab20b',
+        s=0.2,
+        edgecolor="none",
+        ax=ax,
+        legend=False,
+    )
+    plt.axis('off')
+    plt.show()
+
+
+
+.. image:: ../_images/tutorial_tumor_15_0.png
+
+
+Define the niche by differential gene expression analysis.
+
+.. code:: ipython3
+
+    sc.pp.normalize_total(rna_adata, inplace=True, target_sum=1e4)
+    sc.pp.log1p(rna_adata)
+    sc.tl.rank_genes_groups(rna_adata, 'graphclust', method='t-test')
+    sc.pl.rank_genes_groups(rna_adata, n_genes=25, sharey=False)
+
+
+
+.. image:: ../_images/tutorial_tumor_16_0.png
+
+
+.. code:: ipython3
+
+    guide_adata.obs['graphclust'] = rna_adata.obs['graphclust']
+
+.. code:: ipython3
+
+    perturb_data_merge = sc.concat(perturb_data_list)
+    perturb_data_merge = guide_adata[perturb_data_merge.obs_names.unique()].copy()
+
+
+.. parsed-literal::
+
+    /path/to/anndata/_core/anndata.py:1882: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+      utils.warn_names_duplicates("obs")
+
+Create a pseudo-guide, that is the sum of all the guides in the clone.
+
+.. warning::
+
+    This is a very simple way to create a pseudo-guide, and may not be very accurate.
+
+    Due to limited detection of 'sgNontargeting' guide, we performed this simple method to create a pseudo-guide.
+    It is recommended to use the 'sgNontargeting' guide for reference if detected.
+
+.. code:: ipython3
+
+    if hasattr(perturb_data_merge.X, "toarray"):
+        bin_sums = np.ravel(perturb_data_merge.X.sum(axis=1))
+    else:
+        bin_sums = np.ravel(np.sum(perturb_data_merge.X, axis=1))
+    
+    pseudo_adata = ad.AnnData(
+        X=bin_sums.reshape(-1, 1),
+        obs=perturb_data_merge.obs.copy(),
+        var=pd.DataFrame(index=['sgPseudo'])
+    )
+
+.. code:: ipython3
+
+    pseudo_adata = sc.concat([pseudo_adata, perturb_data_merge], axis=1)
+
+.. code:: ipython3
+
+    pseudo_adata.obs['graphclust'] = rna_adata.obs['graphclust']
+
+Calculate the Aitchison distance between the reference guide and the guides in the clone.
+
+See :py:func:`td.stats.aitchison_distance()` for more details.
+
+.. code:: ipython3
+
+    td.stats.aitchison_distance(
+        pseudo_adata,
+        'graphclust',
+        result_field='aitchison_dist',
+        reference_guide='sgPseudo',
+        n_permutations=None,
+    )
+
+.. code:: ipython3
+
+    td.utils.plot.plot_top_kde(
+        pseudo_adata,
+        result_field='aitchison_dist',
+        sgnt_label='sgPseudo',
+        top_n=2,
+    )
+
+
+
+.. image:: ../_images/tutorial_tumor_23_0.png
+
+
+**TARDIS** provides permutation test to calculate the p-value of the Aitchison distance.
+
+.. note::
+
+    The *p_swap* parameter is the probability of swapping the guide labels.
+    It is recommended to set to 0.5 for balanced data.
+    For unbalanced data, it is recommended to set to 0.1-0.3.
+
+.. code:: ipython3
+
+    filtered_guide_data = pseudo_adata[:, pseudo_adata.var_names.isin(top_clones + ['sgPseudo']).tolist()].copy()
+    filtered_guide_data.X = filtered_guide_data.X.astype(np.int64)
+    
+    td.stats.aitchison_distance(
+        filtered_guide_data,
+        'graphclust',
+        result_field='aitchison_dist',
+        reference_guide='sgPseudo',
+        p_swap=0.5,
+        n_permutations=10000,
+    )
+
+
+.. parsed-literal::
+
+    sgArf6_1: 100%|██████████| 10000/10000 [00:07<00:00, 1251.27it/s]
+    sgRab8a_1: 100%|██████████| 10000/10000 [00:08<00:00, 1247.24it/s]
+    sgCks1b_2: 100%|██████████| 10000/10000 [00:08<00:00, 1246.28it/s]
+    sgAgr3_2: 100%|██████████| 10000/10000 [00:08<00:00, 1246.10it/s]
+    ...
+    sgTff3_1: 100%|██████████| 10000/10000 [00:08<00:00, 1247.87it/s]
+
+Visualize the Aitchison distance scatter plot.
+
+.. code:: ipython3
+
+    td.utils.plot_aitchison_dist_scatter(filtered_guide_data, 'sgPseudo')
+
+
+
+.. image:: ../_images/tutorial_tumor_25_0.png
 
 .. [1] He, P., Williams, B.A., Trout, D. et al. The changing mouse embryo transcriptome at whole tissue and single-cell resolution. Nature 583, 760–767 (2020).
