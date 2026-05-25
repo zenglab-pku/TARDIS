@@ -4,73 +4,141 @@ GlobalModule
 .. _GlobalModule:
 
 Kernel Density Estimation and Wasserstein Distance
-----------------------------------------------------
+------------------------------------------------------
 
-.. py:function:: rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting', guide_list=None, n_permutation=50, n_process=8, return_fig=False, return_dataframe=True, sort_by_replicate='_')
+Overview
+--------
 
-   Ranks guides using kernel density estimation and Wasserstein distance.
+The functions in this module provide statistical ranking of guides in spatial transcriptomics data by quantifying the difference between the spatial distributions induced by each guide and a control, using nonparametric statistics and information theory. These metrics are essential for identifying guides that significantly alter spatial gene expression patterns, pointing to candidate genes that may create or disrupt spatial cellular "niches" — microenvironments with specific cellular compositions or molecular signaling cues. 
 
-   :param adata: AnnData object containing spatial transcriptomics data
-   :param control_guide: Name of the control guide, default is 'sgNon-targeting'
-   :param guide_list: List of guides to analyze, default is None (analyzes all guides)
-   :param n_permutation: Number of permutations for significance testing, default is 50
-   :param n_process: Number of parallel processes, default is 8
-   :param return_fig: Whether to return the figure object, default is False
-   :param return_dataframe: Whether to return the results dataframe, default is True
-   :param sort_by_replicate: Delimiter for grouping replicates, default is '_'
-   :return: Returns figure or dataframe based on return_fig and return_dataframe settings
+Biological Rationale
+--------------------
+In complex tissues, cellular functions and states are influenced not only by gene expression but also by spatial context—the "niche" a cell is in. By ranking perturbations (guides) based on how much they reshape spatial patterns (either absolutely using the KL divergence, or with explicit spatial information via the Wasserstein distance), the methods here help identify genes crucial for maintaining or disrupting these spatial niches.
 
-The function uses kernel density estimation (KDE) to compute the spatial distribution of each guide and measures its difference from the control guide using Wasserstein distance.
+Mathematical Principles
+-----------------------
 
-Example usage:
+**Kernel Density Estimation (KDE):**
+  - KDE provides a smooth estimate of the spatial probability density function of the transcriptomic signal for each guide. 
+  - Mathematically, given spatial points \( x_1, x_2, ..., x_n \), the KDE at a location \( x \) is:
+    \[
+    \hat{f}(x) = \frac{1}{nh} \sum_{i=1}^n K\left( \frac{x - x_i}{h} \right)
+    \]
+    where \( K \) is a kernel function (e.g., Gaussian), and \( h \) is the bandwidth.
+    
+**Wasserstein (Earth Mover's) Distance:**
+  - The Wasserstein distance quantifies the minimal "cost" to transform one spatial distribution into another, reflecting both spatial and distributional differences.
+  - In 1D, for probability distributions \( u \) and \( v \):
+    \[
+    W(u, v) = \inf_{\gamma \in \Gamma(u, v)} \int |x-y| d\gamma(x, y)
+    \]
+    where \( \Gamma \) denotes all joint distributions with marginals \( u \) and \( v \).
+  - It is sensitive to both the magnitude and the locations of expression, making it ideal for spatial data.
 
-.. code-block::
+Permutation Significance:
+  - For both statistics, statistical significance (empirical p-value) is assessed by random permutations of guide labels; the p-value is the fraction of permutations yielding a more extreme value than observed.
 
-   import tardis as td
-   results = td.cluster_independent.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
+**KL (Kullback-Leibler) Divergence:**
+  - KL divergence measures the relative entropy between two discrete distributions. For probability distributions \( P \) and \( Q \):
+    \[
+    D_{KL}(P \| Q) = \sum_i P(i) \log \frac{P(i)}{Q(i)}
+    \]
+  - In this context, it quantifies how much the overall expression pattern of a guide differs from a reference (e.g., a non-targeting guide).
 
-The results show the Wasserstein distance between each guide and the control group, with larger distances indicating more significant spatial distribution differences. Asterisks (*) indicate statistical significance with p-value < 0.05.
+Function Documentation
+----------------------
 
-KL Distance Ranking
--------------------
+.. py:function:: rank_by_kernel_estimated_distance(
+      adata, 
+      control_guide='sgNon-targeting', 
+      guide_list=None, 
+      n_permutation=50, 
+      n_process=8, 
+      return_fig=False, 
+      return_dataframe=True, 
+      sort_by_replicate='_'
+   )
 
-The KL (Kullback-Leibler) distance ranking function helps identify guides with significantly different spatial distributions compared to a reference distribution.
+   Ranks guide perturbations by how much they change the spatial distribution of expression, as measured by kernel density estimation and Wasserstein distance from a control guide.
 
-.. py:function:: rank_by_relative_entropy(adata, reference_guide='sum', control_guide='sgNon-targeting', result_field='KL distance', guide_list=None, n_top=50)
+   **Parameters**
+      - **adata**: AnnData object containing spatial transcriptomics data, with `.obsm[spatial]` specifying coordinates.
+      - **control_guide**: Name of the reference or negative control guide. (default: 'sgNon-targeting')
+      - **guide_list**: List of guides to analyze (default: None, uses all except control_guide).
+      - **n_permutation**: Number of permutations for empirical p-value estimation. (default: 50)
+      - **n_process**: Number of parallel processes for permutations. (default: 8)
+      - **return_fig**: Return Matplotlib figure. (default: False)
+      - **return_dataframe**: Return the results DataFrame. (default: True)
+      - **sort_by_replicate**: Delimiter for identifying replicates (default: '_')
 
-   Ranks guides by their KL divergence from a reference distribution.
+   **Returns**
+      - Depending on arguments: a result DataFrame, a figure, or both.
 
-   :param adata: AnnData object containing spatial transcriptomics data
-   :param reference_guide: Reference distribution to compare against. Can be either 'sum' (sum of all guides) or 'ntc' (non-targeting control guide). Default is 'sum'.
-   :param control_guide: Name of the non-targeting control guide in the dataset. Default is 'sgNon-targeting'.
-   :param result_field: Name of the field to store results in adata.uns. Default is 'KL distance'.
-   :param guide_list: Optional list of guides to analyze. If None, all guides will be analyzed. Default is None.
-   :param n_top: Number of top guides to return in the results. Default is 50.
-   :return: None. Results are stored in adata.uns[result_field] as a pandas DataFrame.
+   **Method**
+       1. For each guide, estimate its spatial distribution (KDE).
+       2. Compute the Wasserstein distance from this guide to the control.
+       3. Estimate empirical p-value for observed distance by comparing to a null distribution from permutations.
+       4. Higher Wasserstein distances (with significant p-value) suggest a guide creates a new spatial niche or disrupts existing ones.
 
-The function computes the KL divergence between each guide's spatial distribution and the reference distribution. A higher KL distance indicates a more distinct spatial pattern compared to the reference.
+   **Example:**
 
-Example usage:
+   .. code-block::
 
-.. note:: 
+      import tardis as td
+      results = td.cluster_independent.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
 
-    KL Distance Ranking is generally a method to model distribution of guides that have low spatial resolution or the spatial encoding is not the essential feature.
-    As KL Distance Ranking dicards the spatial relationship between locations.
+   **Interpretation:** Guides ranked at the top most strongly perturb spatial structure. A strong, significant Wasserstein distance means the guide changes the geography of gene expression, pointing to niche-altering genes.
 
-.. code-block:: 
+KL Divergence-Based Ranking
+---------------------------
 
-    import B_cluster_independent
-    B_cluster_independent.rank_by_relative_entropy(adata, reference_guide='sum')
-    D_plot_ranking.plot_ranking(adata, 'KL distance')
+.. py:function:: rank_by_relative_entropy(
+      adata, 
+      reference_guide='sum', 
+      control_guide='sgNon-targeting', 
+      result_field='KL distance', 
+      guide_list=None, 
+      n_top=50
+   )
 
-The result is shown below.
+   Ranks guides by the Kullback-Leibler (KL) divergence of their expression distributions relative to a specified reference.
 
-.. image:: ../_images/KL_bar.png
-   :align: center
+   **Parameters**
+      - **adata**: AnnData object.
+      - **reference_guide**: Which distribution to use as the reference. Options: 'sum' (sum over all guides, i.e., the aggregate or "background" spatial profile), or a specific control guide (e.g., 'sgNon-targeting'). (default: 'sum')
+      - **control_guide**: Name of the non-targeting or negative control guide in the data (default: 'sgNon-targeting').
+      - **result_field**: Name for storing results in `adata.uns` (default: 'KL distance').
+      - **guide_list**: Guides to analyze (default: None, all guides used).
+      - **n_top**: Number of top guides to list in the ranking (default: 50).
 
-We can check the distribution of the guides with high KL distance.
+   **Returns**
+      - None (results are stored in `adata.uns[result_field]` as a pandas DataFrame).
 
-.. image:: ../_images/KL_hist.png
-   :align: center
+   **Method**
+      1. Normalize each guide's total expression as a probability distribution across cells or bins.
+      2. Compute the KL divergence from each guide's distribution to the reference.
+      3. High values suggest the guide induces a distinct expression pattern (but not necessarily a spatially localized "niche"—see Note below).
 
-All KL distance results are stored in the :py:attr:`adata.uns` attribute named 'KL distance' by default.
+   **Example:**
+
+   .. code-block:: 
+
+      import tardis as td
+      td.cluster_independent.rank_by_relative_entropy(adata, reference_guide='sum')
+      # To visualize: td.plot_ranking.plot_ranking(adata, 'KL distance')
+
+   .. note:: 
+
+      KL divergence-based ranking is best suited for cases where spatial encoding is not central (e.g., sparse or low-resolution spatial data, or when distinguishing differences in global expression profile rather than explicit spatial localization). KL divergence considers the distribution across locations but discards their physical spatial relationships.
+
+**Storage of Results**
+
+- All Wasserstein distance and KL divergence results, including statistical significance and rankings, are stored as columns in `adata.var` (and, for summary tables, in `adata.uns`), with keys such as 'w_dist', 'w_dist.p_value', 'KL distance', etc.
+
+**References**
+  - [1] Rubner, Y., Tomasi, C., & Guibas, L. J. (2000). The earth mover's distance as a metric for image retrieval. International Journal of Computer Vision.
+  - [2] Kullback, S., & Leibler, R. A. (1951). On information and sufficiency. Annals of Mathematical Statistics.
+  - [3] Schiebinger, G., et al. (2019). Optimal-transport analysis of single-cell gene expression identifies developmental trajectories in reprogramming. Cell.
+
+**Biological Interpretation**
+  - Guides with high and significant distance values may define, induce, or disrupt unique cellular neighborhoods ("niches") within the tissue, shedding light on the molecular mechanisms underlying spatial organization.

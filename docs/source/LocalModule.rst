@@ -3,83 +3,107 @@ LocalModule
 
 .. _LocalModule:
 
-CLuster PERMANOVA
------------------
+Guide Ranking by Cluster-Dependent Distribution
+----------------------------------------------
 
-.. py:function:: rank_by_cluster_permanova(adata, cluster_field, control_guide='sgNon-targeting', n_permutation=999, guide_list=None, result_field='PERMANOVA p-value')
+This module provides two main statistical approaches for ranking guides in spatial transcriptomics data based on their distribution across clusters: **PERMANOVA-based ranking** and **Aitchison distance-based ranking**. Both methods compare each guide's distribution to that of a reference (usually a negative control guide, e.g., "sgNon-targeting") and support permutation testing for empirical significance assessment.
 
-   Ranks guides by PERMANOVA test comparing their cluster distributions to a control guide.
+PERMANOVA-Based Clustering Guide Ranking
+----------------------------------------
 
-   :param adata: AnnData object containing spatial transcriptomics data
-   :param cluster_field: Name of the clustering field in adata.obs to use for grouping
-   :param control_guide: Name of the control guide to compare against. Default is 'sgNon-targeting'.
-   :param n_permutation: Number of permutations for PERMANOVA test. Default is 999.
-   :param guide_list: Optional list of guides to analyze. If None, all guides will be analyzed. Default is None.
-   :param result_field: Name of the field to store results in adata.uns. Default is 'PERMANOVA p-value'.
-   :return: None. Results are stored in adata.uns[result_field] as a pandas DataFrame.
+.. py:function:: permanova(gdata, cluster_field, result_field='permanova_f_value', reference_guide='sgNon-targeting', library_key=None, count_bins=10, n_permutations=1000, show_progress=True, copy=False)
 
-The function performs PERMANOVA tests comparing each guide's distribution across clusters to the control guide's distribution. A lower p-value indicates a more significant difference from the control guide pattern.
+   Ranks guides by using the PERMANOVA (Permutational Multivariate Analysis of Variance) test to compare their distributions across clusters to a specified reference guide. This method is adapted to spatial transcriptomics by comparing the distributions of cluster counts for each guide to the reference guide via kernel density estimation and the Bray-Curtis distance.
 
-Example usage:
+   **Mathematical Principle:**
 
-.. code-block::
+   Let :math:`X_g = \{x_{gc}\}` be the vector of cell counts (or expression) for guide :math:`g` across each cluster :math:`c`. For guide :math:`g` and the reference guide, kernel density estimation is performed over the binned counts. The two group distributions are compared using Bray-Curtis dissimilarity. The PERMANOVA test pseudo F-statistic for the two groups is then computed as
 
-    import tardis as td
-    td.rank_by_cluster_permanova(adata, cluster_field='leiden')
-    td.plot_ranking(adata, 'PERMANOVA p-value')
+   .. math::
 
-.. note::
+      F = \frac{SS_B}{SS_W + \epsilon}
 
-    PERMANOVA test ranking requires clustering information. Make sure to perform clustering on your data first.
-    The test evaluates whether guides show significantly different patterns across clusters compared to the control using permutation-based statistical testing.
+   where :math:`SS_B` is the between-group mean distance, :math:`SS_W` is the within-group mean distance, and :math:`\epsilon` is a small constant for numerical stability.
 
-All PERMANOVA test results are stored in the :py:attr:`adata.uns` attribute named 'PERMANOVA p-value' by default.
+   Permutation testing is used to assess significance by randomly swapping cluster densities between the guide group and the reference across permutation runs.
 
+   :param gdata: AnnData object with .obs (for cell metadata), .var (for guide info), and .X (expression/count matrix).
+   :param cluster_field: Key in .obs indicating cluster labels.
+   :param result_field: Field name in .var to write PERMANOVA F statistic (default: "permanova_f_value").
+   :param reference_guide: The guide name used as the negative control/reference (default: "sgNon-targeting").
+   :param library_key: If set, analysis will be performed separately per batch/sample group (default: None).
+   :param count_bins: Number of bins for cluster-wise density estimation (default: 10).
+   :param n_permutations: Number of permutations for empirical p-value estimation (default: 1000).
+   :param show_progress: Whether to display progress during permutations (default: True).
+   :param copy: If True, return a new modified AnnData object; else, modify in-place (default: False).
 
-Aitchison Distance Ranking
------------------------
+   :return: None if inplace; otherwise returns AnnData with results written to .var.
 
-The Aitchison distance ranking function helps identify guides with significantly different distributions across clusters compared to a control guide.
+   Example:
 
-.. py:function:: rank_by_aitchison_distance(adata, cluster_field, control_guide='sgNon-targeting', guide_list=None, result_field='Aitchison distance')
+   .. code-block::
 
-   Ranks guides by their Aitchison distance compared to a control guide distribution across clusters.
+      import tardis as td
+      td.tardis_spac.stats.permanova(adata, cluster_field='leiden')
+      adata.var.sort_values('permanova_f_value', ascending=False)
 
-   :param adata: AnnData object containing spatial transcriptomics data
-   :param cluster_field: Name of the clustering field in adata.obs to use for grouping
-   :param control_guide: Name of the control guide to compare against. Default is 'sgNon-targeting'.
-   :param guide_list: Optional list of guides to analyze. If None, all guides will be analyzed. Default is None.
-   :param result_field: Name of the field to store results in adata.uns. Default is 'Aitchison distance'.
-   :return: None. Results are stored in adata.uns[result_field] as a pandas DataFrame.
+   After running, the field "permanova_f_value" in .var contains F statistics for each guide, and "permanova_f_value.p_value" contains empirical p-values from permutation tests.
 
-The function performs chi-square tests comparing each guide's distribution across clusters to the control guide's distribution. A lower p-value indicates a more significant difference from the control guide pattern.
+   **Note:** The method compares the *shape* of cluster abundance distributions between guides and the reference, independently for each guide. Clustering assignment is required in advance.
 
-Example usage:
+Aitchison Distance-Based Guide Ranking
+--------------------------------------
 
-.. code-block:: 
+.. py:function:: aitchison_distance(gdata, cluster_field, result_field='aitchison_dist', reference_guide='sgNon-targeting', library_key=None, n_permutations=1000, show_progress=True, p_swap=0.1, copy=False)
 
-    import tardis as td
-    td.cluster_dependent.rank_by_aitchison_distance(adata, cluster_field='leiden')
-    td.cluster_dependent.plot_ranking(adata, 'Aitchison distance')
+   Computes the Aitchison distance between each guide and the reference guide based on their compositional (cluster-wise) abundances, ranking guides by the resulting distance. The method supports permutation testing by swapping cluster values between the guide and reference with probability `p_swap`.
 
-The result is shown below.
+   **Mathematical Principle:**
 
-.. image:: ../_images/chi2_bar.png
-   :align: center
+   Given the abundance composition of each guide :math:`g` over clusters :math:`c` (counts :math:`x_{gc}`), the composition vector is transformed as:
 
-An alternative visualization is shown below.
+   .. math::
 
-.. image:: ../_images/chi2_scatter.png
-   :align: center
+      v_{g} = \log(x_{gc} + 1) - \frac{1}{C} \sum_{c'} \log(x_{gc'} + 1)
 
-We can also check the distribution of the guides with low Chi2 p-value.
+   where C is the number of clusters.
 
-.. image:: ../_images/chi2_hist.png
-   :align: center
+   The Aitchison distance is then:
 
-.. note::
+   .. math::
 
-    Aitchison distance ranking requires clustering information. Make sure to perform clustering on your data first.
-    The test evaluates whether guides show significantly different patterns across clusters compared to the control.
+      d(g, r) = \sqrt{ \sum_c (v_{g,c} - v_{r,c})^2 }
 
-All chi-square test results are stored in the :py:attr:`adata.uns` attribute named 'Chi2 p-value' by default.
+   Permutation testing proceeds by swapping counts between guide and reference in each cluster with probability `p_swap` and recomputing Aitchison distances.
+
+   :param gdata: AnnData object containing .obs, .var, .X.
+   :param cluster_field: Key in .obs denoting cluster assignment for each cell.
+   :param result_field: Output field name in .var for storing Aitchison distances (default: "aitchison_dist").
+   :param reference_guide: Reference guide name (default: "sgNon-targeting").
+   :param library_key: Key in .obs for performing per-sample (library) analysis (default: None).
+   :param n_permutations: Number of permutations for p-value estimation (default: 1000).
+   :param show_progress: Display progress bar for permutations (default: True).
+   :param p_swap: Probability of swapping the cluster counts between the sample and reference per permutation (default: 0.1).
+   :param copy: Return new AnnData if True; operate in-place if False (default: False).
+
+   :return: None if inplace; otherwise modified AnnData.
+
+   Example:
+
+   .. code-block::
+
+      import tardis as td
+      td.tardis_spac.stats.aitchison_distance(adata, cluster_field='leiden')
+      adata.var.sort_values('aitchison_dist', ascending=False)
+
+   After running, "aitchison_dist" and "aitchison_dist.p_value" fields in .var will contain distance and corresponding empirical p-values.
+
+   **Note:** This method treats guide cluster abundance as a *composition* and measures divergence from the reference using Aitchison geometry (Euclidean distance after log-ratio transform on composition). The permutation null ensures fair empirical significance control. Clustering assignment is required in advance.
+
+Result Storage & Usage
+----------------------
+
+- All ranking and statistical results (scores and p-values) are written to fields in ``adata.var`` as specified by `result_field`.
+- Use the result to filter, rank, or further visualize guides that drive distinct cluster distributions compared to controls.
+- Both methods optionally allow per-sample or per-library group analysis via `library_key`, writing per-group results.
+- Appropriate permutation-based p-values help control for statistical significance across the high-dimensional distribution space.
