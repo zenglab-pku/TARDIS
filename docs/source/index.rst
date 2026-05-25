@@ -40,7 +40,6 @@ Contents
    GlobalModule
    ClusterSpecific
    LocalModule
-   IO
    API
 
 Contacts
