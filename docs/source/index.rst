@@ -3,13 +3,19 @@ Welcome to TARDIS's documentation!
 
 **TARDIS** (TArget pRioritization toolkit for CRISPR Data In Spatial-omics) is a model based toolkit for tissue-specific CRISPR knockout screening analysis.
 
+.. admonition:: Citation
+
+   For usage, please refer to the CELL paper [Unpublished].
+   Please cite the paper when using the toolkit.
+
 .. image:: ../_images/main_tardis_desc.jpg
    :alt: TARDIS Overview
    :align: center
    :width: 1200px
 
+
+
 **TARDIS** is a free, open-source software for both python and R environment users under the MIT license.
-Please cite the paper `Paper here` when using the toolkit.
 
 Official documentation can be found `here <https://tardis-tutorial.readthedocs.io/en/latest/>`_.
 
