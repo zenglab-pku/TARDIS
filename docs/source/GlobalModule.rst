@@ -48,7 +48,7 @@ Permutation Significance:
 Function Documentation
 ----------------------
 
-.. py:function:: rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting', guide_list=None, n_permutation=50, n_process=8, return_fig=False, return_dataframe=True, sort_by_replicate='_')
+.. py:function:: wasserstein_distance(adata, control_guide='sgNon-targeting', guide_list=None, n_permutation=50, n_process=8, return_fig=False, return_dataframe=True, sort_by_replicate='_')
 
    Ranks guide perturbations by how much they change the spatial distribution of expression, as measured by kernel density estimation and Wasserstein distance from a control guide.
 
@@ -74,14 +74,14 @@ Function Documentation
    .. code-block::
 
       import tardis as td
-      results = td.cluster_independent.rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting')
+      results = td.stats.wasserstein_distance(adata, control_guide='sgNon-targeting')
 
    **Interpretation:** Guides ranked at the top most strongly perturb spatial structure. A strong, significant Wasserstein distance means the guide changes the geography of gene expression, pointing to niche-altering genes.
 
 KL Divergence-Based Ranking
 ---------------------------
 
-.. py:function:: rank_by_relative_entropy(adata, reference_guide='sum', control_guide='sgNon-targeting', result_field='KL distance', guide_list=None, n_top=50)
+.. py:function:: kl_divergence(adata, reference_guide='sum', control_guide='sgNon-targeting', result_field='KL distance', guide_list=None, n_top=50)
 
    Ranks guides by the Kullback-Leibler (KL) divergence of their expression distributions relative to a specified reference.
 
@@ -104,7 +104,7 @@ KL Divergence-Based Ranking
    .. code-block:: 
 
       import tardis as td
-      td.cluster_independent.rank_by_relative_entropy(adata, reference_guide='sum')
+      td.stats.kl_divergence(adata, reference_guide='sum')
       # To visualize: td.plot_ranking.plot_ranking(adata, 'KL distance')
 
    .. note:: 

@@ -333,7 +333,7 @@ to demonstrate the distribution of the guides with high KL distance.
 
 .. image:: ../_images/tutorial_t_14_0.png
 
-All KL distance results are stored in the :py:attr:`adata.uns` attribute named 'kl.div' by default.
+All KL distance results are stored in the :py:attr:`adata.var` attribute named 'kl.div' by default.
 
 .. warning::
 

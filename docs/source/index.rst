@@ -39,11 +39,10 @@ Contents
    Cellcharter
    GlobalModule
    LocalModule
+   Plot
    Tutorial
 
 Contacts
 --------
 
 If you have any questions or suggestions, please feel free to contact me at `Barry Wang <barry_2001@stu.pku.edu.cn>`_.
-
-Please also feel free to contact `Dr. Zexian Zeng <zexianzeng@pku.edu.cn>`_ if you are interested in the spatial CRISPR screen data analysis.

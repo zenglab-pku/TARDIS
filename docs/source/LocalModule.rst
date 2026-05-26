@@ -44,7 +44,7 @@ PERMANOVA-Based Clustering Guide Ranking
    .. code-block::
 
       import tardis as td
-      td.tardis_spac.stats.permanova(adata, cluster_field='leiden')
+      td.stats.permanova(adata, cluster_field='leiden')
       adata.var.sort_values('permanova_f_value', ascending=False)
 
    After running, the field "permanova_f_value" in .var contains F statistics for each guide, and "permanova_f_value.p_value" contains empirical p-values from permutation tests.
@@ -93,7 +93,7 @@ Aitchison Distance-Based Guide Ranking
    .. code-block::
 
       import tardis as td
-      td.tardis_spac.stats.aitchison_distance(adata, cluster_field='leiden')
+      td.stats.aitchison_distance(adata, cluster_field='leiden')
       adata.var.sort_values('aitchison_dist', ascending=False)
 
    After running, "aitchison_dist" and "aitchison_dist.p_value" fields in .var will contain distance and corresponding empirical p-values.
