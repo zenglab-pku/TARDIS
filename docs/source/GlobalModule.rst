@@ -48,39 +48,28 @@ Permutation Significance:
 Function Documentation
 ----------------------
 
-.. py:function:: rank_by_kernel_estimated_distance(
-      adata, 
-      control_guide='sgNon-targeting', 
-      guide_list=None, 
-      n_permutation=50, 
-      n_process=8, 
-      return_fig=False, 
-      return_dataframe=True, 
-      sort_by_replicate='_'
-   )
+.. py:function:: rank_by_kernel_estimated_distance(adata, control_guide='sgNon-targeting', guide_list=None, n_permutation=50, n_process=8, return_fig=False, return_dataframe=True, sort_by_replicate='_')
 
    Ranks guide perturbations by how much they change the spatial distribution of expression, as measured by kernel density estimation and Wasserstein distance from a control guide.
 
-   **Parameters**
-      - **adata**: AnnData object containing spatial transcriptomics data, with `.obsm[spatial]` specifying coordinates.
-      - **control_guide**: Name of the reference or negative control guide. (default: 'sgNon-targeting')
-      - **guide_list**: List of guides to analyze (default: None, uses all except control_guide).
-      - **n_permutation**: Number of permutations for empirical p-value estimation. (default: 50)
-      - **n_process**: Number of parallel processes for permutations. (default: 8)
-      - **return_fig**: Return Matplotlib figure. (default: False)
-      - **return_dataframe**: Return the results DataFrame. (default: True)
-      - **sort_by_replicate**: Delimiter for identifying replicates (default: '_')
+   :param adata: AnnData object with spatial transcriptomics data, `.obsm[spatial]` specifying coordinates.
+   :param control_guide: Name of the reference or negative control guide. (default: "sgNon-targeting")
+   :param guide_list: List of guides to analyze (default: None, uses all guides except control_guide)
+   :param n_permutation: Number of permutations for empirical p-value estimation. (default: 50)
+   :param n_process: Number of parallel processes for permutation tests. (default: 8)
+   :param return_fig: If True, returns Matplotlib figure. (default: False)
+   :param return_dataframe: If True, returns results as DataFrame. (default: True)
+   :param sort_by_replicate: Delimiter for identifying replicates (default: "_")
 
-   **Returns**
-      - Depending on arguments: a result DataFrame, a figure, or both.
+   :return: Depending on arguments, a result DataFrame, a figure, or both.
 
    **Method**
-       1. For each guide, estimate its spatial distribution (KDE).
-       2. Compute the Wasserstein distance from this guide to the control.
-       3. Estimate empirical p-value for observed distance by comparing to a null distribution from permutations.
-       4. Higher Wasserstein distances (with significant p-value) suggest a guide creates a new spatial niche or disrupts existing ones.
+      1. For each guide, estimate its spatial distribution (KDE).
+      2. Compute the Wasserstein distance from this guide to the control.
+      3. Estimate empirical p-value for observed distance by comparing to a null distribution from permutations.
+      4. Higher Wasserstein distances (with significant p-value) suggest a guide creates a new spatial niche or disrupts existing ones.
 
-   **Example:**
+   Example:
 
    .. code-block::
 
@@ -92,34 +81,25 @@ Function Documentation
 KL Divergence-Based Ranking
 ---------------------------
 
-.. py:function:: rank_by_relative_entropy(
-      adata, 
-      reference_guide='sum', 
-      control_guide='sgNon-targeting', 
-      result_field='KL distance', 
-      guide_list=None, 
-      n_top=50
-   )
+.. py:function:: rank_by_relative_entropy(adata, reference_guide='sum', control_guide='sgNon-targeting', result_field='KL distance', guide_list=None, n_top=50)
 
    Ranks guides by the Kullback-Leibler (KL) divergence of their expression distributions relative to a specified reference.
 
-   **Parameters**
-      - **adata**: AnnData object.
-      - **reference_guide**: Which distribution to use as the reference. Options: 'sum' (sum over all guides, i.e., the aggregate or "background" spatial profile), or a specific control guide (e.g., 'sgNon-targeting'). (default: 'sum')
-      - **control_guide**: Name of the non-targeting or negative control guide in the data (default: 'sgNon-targeting').
-      - **result_field**: Name for storing results in `adata.uns` (default: 'KL distance').
-      - **guide_list**: Guides to analyze (default: None, all guides used).
-      - **n_top**: Number of top guides to list in the ranking (default: 50).
+   :param adata: AnnData object.
+   :param reference_guide: Reference distribution to use ("sum" for aggregate/background spatial profile, or a specific control guide such as "sgNon-targeting"). (default: "sum")
+   :param control_guide: Name of the non-targeting or negative control guide. (default: "sgNon-targeting")
+   :param result_field: Field name in `adata.uns` for storing results. (default: "KL distance")
+   :param guide_list: Guides to analyze (default: None, uses all guides)
+   :param n_top: Number of top guides to include in ranking. (default: 50)
 
-   **Returns**
-      - None (results are stored in `adata.uns[result_field]` as a pandas DataFrame).
+   :return: None (results are stored in `adata.uns[result_field]` as a pandas DataFrame).
 
    **Method**
       1. Normalize each guide's total expression as a probability distribution across cells or bins.
       2. Compute the KL divergence from each guide's distribution to the reference.
       3. High values suggest the guide induces a distinct expression pattern (but not necessarily a spatially localized "niche"—see Note below).
 
-   **Example:**
+   Example:
 
    .. code-block:: 
 
@@ -133,7 +113,7 @@ KL Divergence-Based Ranking
 
 **Storage of Results**
 
-- All Wasserstein distance and KL divergence results, including statistical significance and rankings, are stored as columns in `adata.var` (and, for summary tables, in `adata.uns`), with keys such as 'w_dist', 'w_dist.p_value', 'KL distance', etc.
+- All Wasserstein distance and KL divergence results, including statistical significance and rankings, are stored as columns in ``adata.var`` (and, for summary tables, in ``adata.uns``), with keys such as ``w_dist``, ``w_dist.p_value``, ``KL distance``, etc.
 
 **References**
   - [1] Rubner, Y., Tomasi, C., & Guibas, L. J. (2000). The earth mover's distance as a metric for image retrieval. International Journal of Computer Vision.

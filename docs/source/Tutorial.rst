@@ -45,7 +45,12 @@ The open-source data is available at `Official SPAC-seq data repository <https:/
 In this set of data, we use two sets of data:
 
 - BGI Stereo-seq data of a MC38 tumor, T cell infiltration perturbation library. (Library on SPAC-seq data repo: 'Day7_rep1')
+    - Preprocessing and filtering
+    - Bottom-up niche independent ranking of guides
 - 10X Genomics Visium HD of subcutaneous mouse MC38 tumor, metastatic tumor cell perturbation library. (Library on SPAC-seq data repo: 'Subq')
+    - Preprocessing and filtering
+    - Clone calling for tumor models
+    - Top-down niche dependent enrichment of guides
 
 After downloading the data (or obtaining your own data), you can check on the data by loading the AnnData object.
 
@@ -53,6 +58,17 @@ After downloading the data (or obtaining your own data), you can check on the da
 
     Remember to move the data to the directory where you are running the code.
     Jupyter notebook is recommended for this tutorial.
+
+.. code-block:: ipython3
+
+    import tardis_spac as td
+
+.. note::
+
+    Import **TARDIS** using python, you can utilize scanpy, squidpy, numpy, matplotlib, seaborn, and pandas.
+    scanpy and squidpy are required for spatial clustering analysis, numpy is required for numerical operations,
+    matplotlib and seaborn are required for visualization, and pandas is required for data manipulation.
+
 
 Infiltrated T cell library
 --------------------------
@@ -73,13 +89,11 @@ Loading and preprocessing
 .. code-block::
 
     import tardis_spac as td
-    fdata = td.utils.load_data('')
+    fdata = td.utils.load_data('Day7_rep1.guide.gem', bin_size=100)
 
-You will receive the following output:
+.. parsed-literal::
 
-.. code-block:: 
-
-    AnnData object with n_obs × n_vars = 17224 × 23376
+    AnnData object with n_obs × n_vars = 68003 × 68
     obsm: 'spatial'
 
 .. note::
@@ -91,33 +105,7 @@ You will receive the following output:
 
 More information about the AnnData object can be found at [here](https://scanpy.readthedocs.io/en/stable/api/scanpy.AnnData.html).
 
-Importing necessary libraries
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Before starting, we need to import necessary libraries.
-
-.. code-block::
-
-    import scanpy as sc
-    import squidpy as sq
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    import pandas as pd
-
-Note that **TARDIS** will import all above libraries automatically. But in this manner you can use abbreviations for the libraries.
-
-.. code-block::
-
-    import tardis as td
-
-.. note::
-
-    Import **TARDIS** using python, you can utilize scanpy, squidpy, numpy, matplotlib, seaborn, and pandas.
-    scanpy and squidpy are required for spatial clustering analysis, numpy is required for numerical operations,
-    matplotlib and seaborn are required for visualization, and pandas is required for data manipulation.
-
-In SPAC-seq, guide count matrix is stored in 'gem' file.
+In poly-A based SPAC-seq, guide count matrix is stored in 'gem' file.
 A gem file is a table file derived from the 'gef' file, which is the output of the **BGI SAW** software. (See `here <https://github.com/STOmics/SAW>`_)
 A gem file is a tab-separated file with the following columns:
 
@@ -132,22 +120,14 @@ We can read the gem file using pandas.
 
 .. note::
 
-    `gem` file can be directly read by our module `tardis.io.load_bin()`
+    `gem` file can be directly read by our module `td.utils.load_bin()`
     however, we will show you how to read the file using pandas for preprocessing.
-
-.. code-block::
-
-    gem_df = pd.read_csv('guide.gem', sep='\t')
-    gem_df.head()
-
-.. image:: ../_images/gem_head.png
-   :align: center
 
 Filtering and Quality Control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spatial perturbation can be highly arbitrary if we cannot perform valid
-preprocessing and filtering of low quality guides and bins. Refer to **Unpublished** (Fig. S12)
+preprocessing and filtering of low quality guides and bins. Refer to [Unpublished]
 for difference between filtered and unfiltered guide distribution.
 
 **TARDIS** performs filtering with validation panels with the following methods.
@@ -155,7 +135,7 @@ for difference between filtered and unfiltered guide distribution.
 .. code-block::
 
    # perform quality check from BGI stereo-seq GEM output
-   td.preprocess.filter_qc_bins('guide.gem')
+   td.preprocess.filter_qc_bins('Day7_rep1.guide.gem')
 
 .. image:: ../_images/qc_guide_bins.png
    :align: center
@@ -173,221 +153,193 @@ The function processes a GEM file containing guide reads and performs filtering 
 4. Optionally binarizes the counts (sets all to 1)
 5. Returns filtered DataFrame or saves to file
 
-Example usage:
-
-.. code-block::
-
-   filtered_data = td.preprocess.filter_guide_reads('A04091E1.gem', output_path='A04091E1_filtered.gem')
-
-After filtering, we can perform quality control on the filtered data.
-
-.. code-block::
-
-   td.preprocess.filter_qc_bins('A04091E1_filtered.gem')
-
-   plt.figure(figsize=(8, 6))
-   scatter = plt.scatter(x=fdata.obsm['spatial'][:, 0], y=fdata.obsm['spatial'][:, 1],
-                        s=fdata.obs['n_genes_by_counts'], alpha=0.5, c=fdata.obs['total_counts'], cmap='viridis')
-   sns.despine()
-   plt.colorbar(scatter, label='Total counts')
-   plt.title('Guide reads')
-
-   plt.show()
-
-.. image:: ../_images/guide_reads.png
-   :align: center
-
-Clustering
-^^^^^^^^^^^^
-
-Cluster the tissue data means finding similarity of bins in the tissue data implicating the same microenvironment.
-
-In our case, we would like to cluster the tissue into tumor environments that could implicate different guide distribution.
-We can simply perform NMF clustering on the tissue data.
-
-.. attention::
-
-   NMF is a simple clustering method that can be used for quick analysis.
-   It is not recommended for complex spatial analysis.
-
-NMF is a simple mathematical trick that can decompose the spatial expression profile into key components
-that we are interested in.
-
-We apply NMF to spatial transcriptomics data. Because we want only major signals, we first filter out
-genes that are not significantly varied across resolution.
-
-.. code-block::
-
-    fdata.copy()
-    fdata.var["mt-"] = fdata.var_names.str.startswith("mt-")
-    fdata.var["gm"] = fdata.var_names.str.startswith("Gm")
-    fdata.var["rik"] = [True if "Rik" in str else False for str in fdata.var_names]
-    fdata = fdata[:, ~fdata.var["mt-"]]
-    fdata = fdata[:, ~fdata.var["gm"]]
-    fdata = fdata[:, ~fdata.var["rik"]]
-
-    with open('mouseHK.txt', 'r') as f:
-        for line in f:
-            hk_genes = line.split('\t')
-            break
-    fdata = fdata[:, [gene for gene in fdata.var_names if gene not in hk_genes]]
-
-The **mouseHK.txt** is a list of housekeeping genes that are derived from singlce-cell sequencing data [1]_.
-
-Then we perform NMF on the filtered data with a simple function. :py:func:`spp.nmf_clustering()`
-
-.. code-block::
-
-    nmf_data = td.preprocess.nmf_clustering(fdata, n_components=50)
+.. code:: ipython3
+    
+    import scanpy as sc
+    import anndata as ad
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    import numpy as np
+    from scipy import sparse
+    
+    from tqdm import tqdm
 
 .. note::
 
-    The number of components is set to 50, which is a optimal resolution of programs of genes that can be futher clustered. A larger
-    number of components can be used for more complex analysis, but a small number is not recommended.
+    Above is a common practice to filter and QC the guide from *GEM* file.
+    Here we read in the guide and RNA data from the h5ad file, which can be downloaded from the SPAC-seq data repository.
 
-.. code-block::
+.. code:: ipython3
 
-    clustered_nmf_data = td.preprocess.nmf_consensus(nmf_data)
+    guide_adata = sc.read_h5ad('/home/wpy/stereoseq/tutorial/DATA/Day7_rep1.guide.h5')
+    rna_adata = sc.read_h5ad('/home/wpy/stereoseq/tutorial/DATA/Day7_rep1.h5')
 
-.. image:: ../_images/nmf_cluster.png
-   :align: center
+.. code:: ipython3
 
-In this NMF approach, we decompose the gene expression profile space-wise into an extend of components. Then perform consensus clustering of
-component's pearsonr correlation.
+    rna_adata
 
-.. math::
 
-    \mathbf{A} \approx \mathbf{W} \mathbf{H} \\
-    \text{where } \mathbf{A} \in \mathbb{R}^{n \times m} \text{ is the gene expression matrix} \\
-    \mathbf{W} \in \mathbb{R}^{n \times k} \text{ is the component matrix} \\
-    \mathbf{H} \in \mathbb{R}^{k \times m} \text{ is the coefficient matrix} \\
+.. parsed-literal::
 
-Then we compute the pearson correlation matrix:
+    AnnData object with n_obs × n_vars = 567178 × 13177
+        obs: 'marker', 'n_genes'
+        var: 'mt', 'mt-', 'gm', 'Rb', 'rik', 'n_cells'
+        obsm: 'spatial'
 
-.. math::
 
-    \mathbf{P} = \text{pearson}(\mathbf{H}_i, \mathbf{H}_j) \\
 
-Finally we perform consensus clustering on :math:`\mathbf{P}`.
+.. code:: ipython3
 
-The clustered program can then be scored using the *scanpy* :py:function:`tl.score_genes()` function.
-The score of top optimal genes is store in the :py:attr:`adata.obs` attribute.
+    guide_adata
 
-.. code-block::
 
-    clustered_nmf_data.obs['nmf_cluster'] = clustered_nmf_data.obs.idxmax(axis=1).str.split('_').str[2].astype(int)
+.. parsed-literal::
 
-A sptial demonstration of NMF clustering is shown below.
+    AnnData object with n_obs × n_vars = 568003 × 34
+        obs: 'marker'
+        obsm: 'spatial'
 
-.. image:: ../_images/NMF_cluster_map.png
-   :align: center
 
-Now that we have the clustered data, we can perform guide distribution analysis.
+.. code:: ipython3
 
-Cluster Dependent Analysis
-----------------------------
+    guide_adata.obsm['spatial'] = np.concat([np.zeros((guide_adata.obsm['spatial'].shape[0], 1)), guide_adata.obsm['spatial'][:, 1].reshape(-1, 1), guide_adata.obsm['spatial'][:, 0].reshape(-1, 1)], axis=1)
 
-In cluster dependent analysis, we perform chi-square test to determine the guide specificity in each cluster.
-Cluster dependent means that we would like to know the guide specificity in each cluster.
+.. code:: ipython3
 
-A guide's specificity can be determined by the proportion of the guide's reads in each cluster,
-and statistical significance can be determined by chi-square test.
+    filtered_guide_adata = filter_guide_reads_h5(
+        guide_adata,
+        guide_prefix='sg',
+        binarilize=True,
+        assign_pattern='max',
+        filter_threshold=1,
+    )
 
-Import the function :py:func:`rank_by_chi_square()` to perform chi-square test.
+.. code:: ipython3
 
-.. code-block:: 
+    _, ax = plt.subplots(figsize=(5, 5))
+    td.utils.plot_spatial_guides(filtered_guide_adata, scale_factor=1, s=3, ax=ax)
+    ax.invert_yaxis()
+    plt.show()
 
-    import sp.cluster_dependent as spc
-    spc.rank_by_chi_square(fdata, cluster_field='nmf_cluster')
-    spc.plot_ranking_bar(fdata, 'Chi2 p-value')
 
-The result is shown below.
-This function :py:func:`plot_ranking_bar()` is a simple function to plot the chi-square test result using bar plot.
+.. image:: ../_images/tutorial_t_6_0.png
 
-.. image:: ../_images/chi2_bar.png
-   :align: center
 
-An alternative visualization is shown below.
-This function :py:func:`plot_ranking_scatter()` is a simple function to plot the chi-square test result using scatter plot.
+.. code:: ipython3
 
-.. image:: ../_images/chi2_scatter.png
-   :align: center
+    filtered_guide_adata.var['n_total_counts'] = filtered_guide_adata.X.toarray().sum(axis=0)
 
-We can also check the distribution of the guides with low Chi2 p-value.
-This function :py:func:`plot_ranking_hist()` is a simple function to plot the chi-square test result using histogram
-to demonstrate the distribution of the guides with low Chi2 p-value.
+.. code:: ipython3
 
-.. image:: ../_images/chi2_hist.png
-   :align: center
+    sc.pl.highest_expr_genes(filtered_guide_adata, n_top=20, show=True)
+
+
+
+.. image:: ../_images/tutorial_t_8_0.png
+
+
+A robust CRISPR screening should have a good distribution of the guides with high expression.
 
 .. note::
 
-    Chi-square test ranking requires clustering information. Make sure to perform clustering on your data first.
-    The test evaluates whether guides show significantly different patterns across clusters compared to the control.
+    For robust ranking of spatially specific guides, an appropriate guide filter is essential.
+    Based on data quality and cell type, we recommend a filter threshold of 200 for poly-A based SPAC-seq on T cells, as an example.
 
-All chi-square test results are stored in the :py:attr:`adata.uns` attribute named 'Chi2 p-value' by default.
+.. code:: ipython3
 
-Before we can move on to cluster independent analysis, we can try identifying the guide's specificity in a particular cluster.
-**TARDIS** provides a function :py:func:`sp.cluster_independent.volcano_plot()` to perform chi-square test on a particular cluster for each guide,
-determining the specificity of each guide in the cluster.
+    td.utils.plot_guide_gene_summary(filtered_guide_adata)
 
-Similar to RNA-seq analysis, we can perform volcano plot to visualize the guide's specificity in a particular cluster.
 
-.. code-block::
 
-    sp.cluster_independent.volcano_plot(fdata, cluster_field='nmf_cluster', cluster_id=0)
+.. image:: ../_images/tutorial_t_9_0.png
 
-.. image:: ../_images/Volcano.png
-   :align: center
 
-In this plot, the x-axis is the guide's specificity in the cluster, and the y-axis is the -log10(p-value) of the chi-square test.
-The gray lines is the threshold of the p-value, and the guides with p-value less than the threshold are considered to be specific to the cluster.
-Colored dots are the guides with p-value less than the threshold, meaning their specificity is significant in the cluster.
+.. code:: ipython3
 
-For instance, in the plot above, we can see that the guide 'sgCd44' is specific to the cluster marked with dark blue color, meaning enrichment.
+    filtered_guide_adata = td.utils.combine_guide_replicates(filtered_guide_adata)
 
-.. note::
+We can visualize the spatial distribution of the guides with high expression using :py:func:`td.utils.plot_spatial_guides()`.
 
-    The threshold of the p-value is set to 0.05 by default. You can change the threshold by setting the `threshold` parameter.
+Here we visualize the spatial distribution of the guides 'sgZc3h12a' and 'sgnon-targeting'.
 
-Cluster Independent Analysis
-----------------------------
+.. code:: ipython3
+
+    _, axs = plt.subplots(1, 2, figsize=(11, 5))
+    td.utils.plot_spatial_guides(filtered_guide_adata[filtered_guide_adata[:, 'sgZc3h12a'].X > 0], scale_factor=1, s=3, ax=axs[0])
+    axs[0].set_title('sgZc3h12a')
+    axs[0].invert_yaxis()
+    td.utils.plot_spatial_guides(filtered_guide_adata[filtered_guide_adata[:, 'sgnon-targeting'].X > 0], scale_factor=1, s=3, ax=axs[1])
+    axs[1].set_title('sgnon-targeting')
+    axs[1].invert_yaxis()
+    plt.show()
+
+
+
+.. image:: ../_images/tutorial_t_11_0.png
+
+
+Kullback-Leibler divergence test
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In cluster independent analysis, we perform KL divergence test to determine the guide specificity compared to non-targeting guide.
 Cluster independent means that we would like to know the guide specificity compared to wild type T cells.
-
-More detailed information about modeling can be found at [our paper](https://www.nature.com/articles/s41592-024-02012-z).
 
 .. note:: 
 
     KL Distance Ranking is generally a method to model distribution of guides that have low spatial resolution or the spatial encoding is not the essential feature.
     As KL Distance Ranking dicards the spatial relationship between locations.
 
-.. code-block:: 
+.. code:: ipython3
 
-    import sp.cluster_independent as spc
-    spc.rank_by_relative_entropy(fdata, reference_guide='sum')
-    spc.plot_ranking(fdata, 'KL distance')
+    td.stats.kl_divergence(
+        filtered_guide_adata,
+        reference_guide='sgnon-targeting',
+        result_field='kl_div',
+        n_permutations=10000
+    )
 
-The result is shown below.
-This function :py:func:`plot_ranking()` is a simple function to plot the KL divergence test result using bar plot.
 
-.. image:: ../_images/KL_bar.png
-   :align: center
+.. parsed-literal::
+
+    /home/wpy/miniconda3/envs/tardis/lib/python3.14/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+      from .autonotebook import tqdm as notebook_tqdm
+    KL divergence permutations: 100%|██████████| 32/32 [01:00<00:00,  1.90s/it]
+
+
+.. code:: ipython3
+
+    td.utils.plot_top_kde(
+        filtered_guide_adata,
+        result_field='kl_div',
+        sgnt_label='sgnon-targeting',
+        top_n=2,
+    )
+
+
+
+.. image:: ../_images/tutorial_t_13_0.png
 
 We can check the distribution of the guides with high KL distance.
-This function :py:func:`plot_ranking_hist()` is a simple function to plot the KL divergence test result using histogram
+This function :py:func:`plot_ranking_scatter()` is a simple function to plot the KL divergence test result using scatter plot
 to demonstrate the distribution of the guides with high KL distance.
 
-.. image:: ../_images/KL_hist.png
-   :align: center
+.. code:: ipython3
 
-All KL distance results are stored in the :py:attr:`adata.uns` attribute named 'KL distance' by default.
+    td.utils.plot_ranking_scatter(filtered_guide_adata, 'sgnon-targeting', result_field='kl_div')
+
+
+
+.. image:: ../_images/tutorial_t_14_0.png
+
+All KL distance results are stored in the :py:attr:`adata.uns` attribute named 'kl.div' by default.
 
 .. warning::
 
     KL divergence test requires reference guide. Make sure to set the reference guide correctly using the `reference_guide` parameter.
     The reference guide can be set to 'sum' or 'ntc' (non-targeting control guide).
+
 
 Perturbed subcutaneous tumor model
 ------------------------------------
