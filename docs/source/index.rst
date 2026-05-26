@@ -38,7 +38,6 @@ Contents
    NMF
    Cellcharter
    GlobalModule
-   ClusterSpecific
    LocalModule
    Tutorial
 
