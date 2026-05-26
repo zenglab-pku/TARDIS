@@ -34,7 +34,7 @@ You can simply install TARDIS dependencies using conda through:
 Installing using R
 ------------
 
-To install TARDIS (R version), first install *devtools*
+To install TARDIS (R version), first download the package from `GitHub <https://github.com/stereoseq/TARDIS>`_
 
 .. note::
    Compatible with **R >= 4.2**. Uses **Seurat** for count matrices and guide-level metadata.

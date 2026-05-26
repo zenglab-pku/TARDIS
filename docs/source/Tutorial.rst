@@ -20,7 +20,7 @@ Also, if you are new to spatial perturbation analysis, we recommend you to read 
     **TARDIS** represents the first dedicated software package designed specifically for spatial CRISPR screen analysis.
 
 Preparations
-^^^^^^^^^^^^^
+------------
 
 Before everything, prepare your spatial CRISPR screen data.
 
@@ -84,7 +84,7 @@ Basic information of the data:
 **TARDIS** aims to pinpoint guides that have significant spatial difference of guide to *non-targeting control* guide, which reflects functional effect of the perturbed gene.
 
 Loading and preprocessing
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block::
 
@@ -124,7 +124,7 @@ We can read the gem file using pandas.
     however, we will show you how to read the file using pandas for preprocessing.
 
 Filtering and Quality Control
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Spatial perturbation can be highly arbitrary if we cannot perform valid
 preprocessing and filtering of low quality guides and bins. Refer to [Unpublished]
@@ -281,7 +281,7 @@ Here we visualize the spatial distribution of the guides 'sgZc3h12a' and 'sgnon-
 
 
 Kullback-Leibler divergence test
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In cluster independent analysis, we perform KL divergence test to determine the guide specificity compared to non-targeting guide.
 Cluster independent means that we would like to know the guide specificity compared to wild type T cells.
@@ -435,7 +435,7 @@ Make sure to make the variable names unique.
 
 
 General quanlity control
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
 
@@ -467,7 +467,7 @@ A robust CRISPR screening should have a good distribution of the guides with hig
 
 
 Clone calling for tumor Models
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In tumor models, we would like to call the clones from the spatial guides.
 
@@ -590,7 +590,7 @@ Visualize the clone calling result for top 50 guides with high expression.
 
 
 Niche specific analysis
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A tumor clone can be identified to be specificly distributed in a particular niche.
 
