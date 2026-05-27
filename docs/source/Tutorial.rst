@@ -596,7 +596,7 @@ A tumor clone can be identified to be specificly distributed in a particular nic
 
 .. code:: ipython3
 
-    rna_adata.obs['graphclust'] = pd.read_csv('/data200T/SPACseq/HD/output/subq/outs/binned_outputs/square_008um/analysis/clustering/gene_expression_graphclust/clusters.csv', index_col=0)['Cluster'].astype(str)
+    rna_adata.obs['graphclust'] = pd.read_csv('/path/to/spaceranger/output/outs/binned_outputs/square_008um/analysis/clustering/gene_expression_graphclust/clusters.csv', index_col=0)['Cluster'].astype(str)
 
 .. code:: ipython3
 
