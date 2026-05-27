@@ -47,7 +47,7 @@ To accurately capture local perturbation enrichment, TARDIS employs Aitchison di
 Users can run all 2 models and derive consistency analysis with different models to determine their results and robustness of the analysis.
 Finally, TARDIS provides user-friendly interfaces to illustrate and output the ranking results.
 
-.. image:: ./docs/_images/Illustration.jpeg
+.. image:: ./docs/_images/main_tardis_desc.jpg
    :align: center
 
 Installation Using Python
@@ -59,12 +59,14 @@ You can simply install TARDIS dependencies using pip through:
 
 .. code-block:: 
 
-   (.venv) $ pip install numpy pandas scipy scikit-learn anndata scanpy statsmodels
+   (.venv) $ conda create -n tardis_env python>=3.8
+   (.venv) $ conda activate tardis_env
+   (.venv) $ conda install numpy pandas scipy scikit-learn anndata scanpy
    (.venv) $ pip install tardis_spac
 
 .. note:: 
 
-   Python version == 3.12 is recommended.
+   Python version >=3.8 is recommended.
 
 Other dependencies will be installed automatically.
 For illustration modules, *Seaborn* and *Matplotlib* are required.
@@ -72,13 +74,24 @@ For illustration modules, *Seaborn* and *Matplotlib* are required.
 Installation Using R
 ------------
 
-To install TARDIS (R version), first intall *dev-tools* and *remotes* packages.
+To install TARDIS (R version), first download the package from `GitHub <https://github.com/stereoseq/TARDIS/tardis_r>`_ and install it using the following commands:
 
-.. code-block::
+Install core dependencies first (recommended), then install the package:
 
-   $ install.packages('devtools')
-   $ devtools::install_github("zenglab-pku/TARDIS")
-   
-R will automatically install all the dependencies.
+.. code-block:: r
+
+   install.packages(c("devtools", "Matrix", "ggplot2"))
+   # Seurat: install from CRAN or https://satijalab.org/seurat/articles/install.html
+   install.packages("Seurat")
+
+   devtools::install("/path/to/stereoseq/tardis_r")
+   # If dependency download fails, use:
+   # devtools::install("/path/to/stereoseq/tardis_r", dependencies = FALSE)
+
+Alternative without devtools:
+
+.. code-block:: r
+
+   install.packages("/path/to/stereoseq/tardis_r", repos = NULL, type = "source")
 
 For more detailed information, please refer to the tutorial.

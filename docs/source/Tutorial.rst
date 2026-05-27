@@ -9,7 +9,7 @@ This is a step-by-step tutorial for **TARDIS** analysis.
 
 Also, if you are new to spatial perturbation analysis, we recommend you to read the following paper:
 
-[Unpublished]
+`Uncovering Spatially Resolved Functional Genomics with CRISPR Screen Sequencing <https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7>`_.
 
 .. admonition:: Reference
 
@@ -39,7 +39,7 @@ TARDIS mainly integrates two forms of data to perform statistical analysis:
 - **Guide Mapping Data**: Spatially resolved guide annotation or guide UMI count matrix.
 - **Spatial Transcriptomics Data**: Spatial transcriptomics data.
 
-In this tutorial, we will use the data from [Unpublished].
+In this tutorial, we will use the data from `Uncovering Spatially Resolved Functional Genomics with CRISPR Screen Sequencing <https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7>`_.
 The open-source data is available at `Official SPAC-seq data repository <https://spac.pku-genomics.org>`_.
 
 In this set of data, we use two sets of data:
@@ -127,7 +127,7 @@ Filtering and Quality Control
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Spatial perturbation can be highly arbitrary if we cannot perform valid
-preprocessing and filtering of low quality guides and bins. Refer to [Unpublished]
+preprocessing and filtering of low quality guides and bins. Refer to `Uncovering Spatially Resolved Functional Genomics with CRISPR Screen Sequencing <https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7>`_
 for difference between filtered and unfiltered guide distribution.
 
 **TARDIS** performs filtering with validation panels with the following methods.

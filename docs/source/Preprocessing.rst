@@ -42,7 +42,7 @@ Use **SPAC-seq** script *SeekSeq* to process your enriched guide FASTQ files.
    - R1 containing constant region "TTGTCTTCCTAAGAC" with a max error rate of 1 base mismatch.
    - R2 containing scaffold region "GTTTTAGA" with a max error rate of 1 base mismatch.
 
-   See our paper for more details: [Unpublished].
+   See our paper for more details: `Uncovering Spatially Resolved Functional Genomics with CRISPR Screen Sequencing <https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7>`_..
 
 Successfully processed, you should be able to find guide reads in your *guide.gem* file in SAW output directory.
 

@@ -5,7 +5,7 @@ Welcome to TARDIS's documentation!
 
 .. admonition:: Citation
 
-   For usage, please refer to the CELL paper [Unpublished].
+   For usage, please refer to the CELL paper `Uncovering Spatially Resolved Functional Genomics with CRISPR Screen Sequencing <https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7>`_..
    Please cite the paper when using the toolkit.
 
 .. image:: ../_images/main_tardis_desc.jpg
