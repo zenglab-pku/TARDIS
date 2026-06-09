@@ -57,7 +57,7 @@ To use TARDIS (python version), first install its dependencies using pip or cond
 
 You can simply install TARDIS dependencies using pip through:
 
-.. code-block:: 
+.. code-block::
 
    (.venv) $ conda create -n tardis_env python>=3.8
    (.venv) $ conda activate tardis_env
@@ -95,3 +95,22 @@ Alternative without devtools:
    install.packages("/path/to/stereoseq/tardis_r", repos = NULL, type = "source")
 
 For more detailed information, please refer to the tutorial.
+
+SPAC-seq data can be accessed here:
+
+https://spac.pku-genomics.org/#/download
+
+For the theory or modeling rationale behind TARDIS, please refer to the `TARDIS section of the paper <https://www.sciencedirect.com/science/article/pii/S0092867426005167?via%3Dihub#sec8:~:text=QN%20%3D%20FALSE.-,TARDIS%3A%20Target%20pRioritization%20toolkit%20for%20perturbation%20Data%20In%20Spatial%20omics,-Spatial%20CRISPR%20screens>`_.
+
+
+   If the page opens at the top of the article, refresh the page or use the in-page search for "TARDIS: Target pRioritization toolkit".
+
+
+
+.. admonition:: Citation
+
+Citation
+------------
+   If you find TARDIS useful, please consider citing:
+
+   Zhang H, Zhang Z, Wang P, Xu T, Chen X, Zhao Y, Lin S, Cai W, Ren P, Luo C, Zhang P, Wang Y, Hou S, Zhao Y, Zeng H, Liu Z, Wang C, Gao Z, Feng Y, Pan D, Zeng Z. **Uncovering spatially resolved functional genomics with CRISPR screen sequencing.** *Cell*. 2026 May 26:S0092-8674(26)00516-7. doi: `10.1016/j.cell.2026.04.049 <https://doi.org/10.1016/j.cell.2026.04.049>`_. Epub ahead of print. PMID: 42190664.
