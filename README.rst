@@ -111,6 +111,7 @@ For the theory or modeling rationale behind TARDIS, please refer to the `TARDIS 
 
 Citation
 ------------
-   If you find TARDIS useful, please consider citing:
 
-   Zhang H, Zhang Z, Wang P, Xu T, Chen X, Zhao Y, Lin S, Cai W, Ren P, Luo C, Zhang P, Wang Y, Hou S, Zhao Y, Zeng H, Liu Z, Wang C, Gao Z, Feng Y, Pan D, Zeng Z. **Uncovering spatially resolved functional genomics with CRISPR screen sequencing.** *Cell*. 2026 May 26:S0092-8674(26)00516-7. doi: `10.1016/j.cell.2026.04.049 <https://doi.org/10.1016/j.cell.2026.04.049>`_. Epub ahead of print. PMID: 42190664.
+If you find TARDIS useful, please consider citing:
+
+Zhang H, Zhang Z, Wang P, Xu T, Chen X, Zhao Y, Lin S, Cai W, Ren P, Luo C, Zhang P, Wang Y, Hou S, Zhao Y, Zeng H, Liu Z, Wang C, Gao Z, Feng Y, Pan D, Zeng Z. **Uncovering spatially resolved functional genomics with CRISPR screen sequencing.** *Cell*. 2026;189(15):4594–4618.e48. https://doi.org/10.1016/j.cell.2026.04.049
